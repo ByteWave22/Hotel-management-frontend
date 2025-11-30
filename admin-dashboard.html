@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - bookify Hotel</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background: #f7f7f7;
+        }
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: #2c3e50;
+            padding: 20px;
+            position: fixed;
+            color: white;
+        }
+        .sidebar h2 {
+            font-size: 24px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 12px;
+            margin: 6px 0;
+            color: white;
+            text-decoration: none;
+            background: #34495e;
+            border-radius: 6px;
+        }
+        .sidebar a:hover {
+            background: #1abc9c;
+        }
+        .content {
+            margin-left: 280px;
+            padding: 20px;
+        }
+        .stat-box {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="#" id="btnBookings">Bookings</a>
+        <a href="#" id="btnRooms">Rooms</a>
+        <hr style="color: #bbb">
+        <a href="login.html">Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <h1>Admin Dashboard</h1>
+        <p class="text-muted">Overview of hotel performance</p>
+
+        <div class="row" id="statsContainer">
+            <!-- JS هيضيف الإحصائيات هنا -->
+        </div>
+
+        <hr class="my-4">
+
+        <h3>Recent Bookings</h3>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>User</th>
+                    <th>Room</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="recentBookingsTable">
+                <!-- JS هيضيف الصفوف هنا -->
+            </tbody>
+        </table>
+
+        <hr class="my-4">
+
+        <h3>Top Customers</h3>
+        <ul class="list-group" id="topCustomersList">
+            <!-- JS هيضيف العملاء هنا -->
+        </ul>
+
+    </div>
+
+    <!-- JS File -->
+    <script src="admin-dashboard.js"></script>
+
+</body>
+</html>

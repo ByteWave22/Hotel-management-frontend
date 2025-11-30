@@ -1,0 +1,166 @@
+:root {
+  --primary: #0B1B3B;
+  --primary-light: #102A43;
+  --gold: #F5C518;
+  --white: #FFFFFF;
+  --bg-section: #F2F4F7;
+}
+
+/* Critical overrides */
+.btn-primary { background-color: var(--primary) !important; border-color: var(--primary) !important; color: var(--gold) !important; }
+.btn-primary:hover { background-color: var(--primary-light) !important; }
+
+.navbar, .navbar-dark { background-color: var(--primary) !important; color: var(--white) !important; }
+.navbar .nav-link { color: rgba(255,255,255,0.92) !important; }
+.navbar .nav-link:hover { color: var(--gold) !important; }
+
+.card { background: linear-gradient(180deg, var(--primary-light), var(--primary)) !important; color: var(--white) !important; border: none !important; border-radius: 12px !important; box-shadow: 0 12px 30px rgba(7,20,40,0.28) !important; }
+
+.footer, footer { background: var(--primary) !important; color: var(--white) !important; border-top: 4px solid var(--gold) !important; }
+.footer a { color: var(--gold) !important; }
+
+.chat-btn { background: var(--gold) !important; color: #000 !important; box-shadow: 0 10px 36px rgba(7,20,40,0.28) !important; }
+.chatbot-widget .chat-top { background: linear-gradient(90deg, var(--primary), var(--primary-light)) !important; color: var(--white) !important; }
+.bubble.bot { background: #071428 !important; color: var(--white) !important; }
+
+.portfolio-content a .card { background: var(--primary-light) !important; color: var(--white) !important; }
+.contact .label, .contact .link { color: var(--gold) !important; }
+
+/* small responsive tweaks */
+@media (max-width: 767px) {
+  .navbar { padding: .6rem 1rem !important; }
+  .card { padding: 1rem !important; }
+}
+
+.card p,
+.portfolio-content a .card p {
+  color: #C7D4E6 !important;
+}
+
+/* Professional Hotel Card Hover */
+.card {
+    position: relative;
+    background: linear-gradient(180deg, #0B1B3B, #102A43);
+    border-radius: 14px;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    overflow: hidden;
+}
+
+/* golden glow */
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    border: 2px solid transparent;
+    transition: border-color 0.35s ease;
+}
+
+.card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 22px 45px rgba(245, 197, 24, 0.22);
+}
+
+.card:hover::before {
+    border-color: #F5C518;
+}
+
+.btn-accent {
+    background-color: #F5C518;    /* الدهبي */
+    color: #000;
+    padding: 12px 28px;
+    border-radius: 30px;
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(245, 197, 24, 0.35);
+}
+
+/* Hover effect */
+.btn-accent:hover {
+    background-color: #d4a610 !important; /* دهبي أغمق */
+    color: #000 !important;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 26px rgba(245, 197, 24, 0.55);
+}
+
+/* ===== Fix click-blocking caused by decorative pseudo-elements or overlays ===== */
+
+/* Ensure cards have proper stacking context */
+.card {
+  position: relative; /* needed so pseudo-elements are inside card stacking context */
+}
+
+/* Decorative pseudo-elements must NOT capture pointer events */
+.card::before,
+.card::after,
+.card .overlay,
+.card .cover {
+  pointer-events: none !important;
+}
+
+/* Make sure card content (including buttons) sits above decorations */
+.card > .card-body,
+.card .card-body * {
+  position: relative;
+  z-index: 3; /* above ::before/::after which will be z-index:1 by default */
+}
+
+/* Force Book Now buttons to be clickable (over any stray overlay) */
+a.btn-accent {
+  position: relative !important;
+  z-index: 10000 !important;
+  pointer-events: auto !important;
+}
+
+/* If you used a ::before border trick, keep it decorative only */
+.card::before {
+  z-index: 1;
+  /* keep visual effects, but don't block clicks */
+  pointer-events: none !important;
+}
+
+/* Safety: if any global overlay accidentally covers content, allow clicks through it
+   (use carefully — only for obvious transparent overlays) */
+.overlay,
+.page-overlay {
+  pointer-events: none !important;
+}
+
+/* If carousel controls or indicators appear over buttons, ensure buttons are above */
+.carousel,
+.carousel-inner,
+.carousel-item {
+  z-index: 0;
+}
+
+/* زر بدون أي إشعاع أو Glow */
+.btn-accent {
+    background-color: #F5C518;
+    color: #000;
+    padding: 12px 28px;
+    border-radius: 30px;
+    border: none;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+/* Hover بدون لمعة ولا ظل */
+.btn-accent:hover {
+    background-color: #d4a610 !important; /* أغمق بسيط فقط */
+    color: #000 !important;
+    box-shadow: none !important;   /* <-- إزالة الإشعاع */
+    transform: translateY(-2px);   /* حركة بسيطة */
+}
+
+.booking-card .room-info,
+.booking-card .room-info *,
+.booking-card .room-info span,
+.booking-card .room-info p,
+.booking-card .room-info strong {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+

@@ -1,0 +1,50 @@
+/* =========================
+   Variables / Theme Colors - Dark Theme
+   ========================= */
+:root {
+    --main-color: #0B1A2E;        /* Darker Blue */
+    --secondary-color: #F5B700;   /* Golden accent */
+    --accent-color: #1F2937;      /* Dark gray accent */
+    --bg-section: #1E293B;        /* Section background - dark */
+    --text-color: #E5E7EB;        /* Light text for dark background */
+    --paragraph-color: #CBD5E1;   /* Paragraph light gray */
+    --section-padding: 60px;
+    --font-primary: 'Work Sans', sans-serif;
+    --font-secondary: 'Poppins', sans-serif;
+}
+
+/* =========================
+   Global Reset & Typography
+   ========================= */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    font-family: var(--font-primary);
+    color: var(--text-color);
+    line-height: 1.7;
+    background-color: #0B1A2E; /* Dark background */
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family: var(--font-secondary);
+    color: var(--secondary-color);
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5em;
+}
+
+p { color: var(--paragraph-color); line-height: 1.8; font-size: 1rem; }
+
+img { max-width: 100%; height: auto; }
+
+.container {
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media (min-width: 768px) { .container { width: 750px; } }
+@media (min-width: 992px) { .container { width: 970px; } }
+@media (min-width: 1200px) { .container { width: 1170px; } }
