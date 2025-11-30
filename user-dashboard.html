@@ -1,30 +1,565 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Dashboard - Bookify Hotel</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
-    <a class="navbar-brand" href="index.html">Bookify Hotel</a>
-    <div class="ms-auto">
-      <button class="btn btn-outline-light" id="userLogoutBtn">Logout</button>
-      
-    </div>
-  </nav>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>User Dashboard - Bookify Hotel</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/normalize.css"/>
+    <link rel="stylesheet" href="css/all.min.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/override.css"/>
+    
+    <style>
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card.secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .stat-card.success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .stat-card.warning {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .booking-card {
+            transition: transform 0.2s ease;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .booking-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, #24426a 0%, #1a2d4d 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 20px 20px;
+        }
+    </style>
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">Bookify<span class="gold-logo">Hotel</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="rooms.html">Rooms</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          </ul>
+          <div class="d-none d-lg-flex ms-lg-3 gap-2" id="navButtons">
+            <!-- Will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </nav>
 
-  <div class="container mt-5">
-    <h2>Welcome, <span id="userName">User</span></h2>
-    <hr>
-    <h4>Your Bookings:</h4>
-    <div id="userBookings">
-      <p>No bookings yet.</p>
-    </div>
-  </div>
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1 id="welcomeMessage" class="fw-bold mb-2">Hello, User!</h1>
+            <p class="mb-0 opacity-75" id="welcomeSubtitle">Welcome to your personal dashboard</p>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <button class="btn btn-accent btn-lg" onclick="window.location.href='rooms.html'">
+              <i class="bi bi-plus-circle me-2"></i>Book New Room
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <script src="script.js"></script>
-</body>
+    <main class="flex-grow-1 section">
+      <div class="container">
+        <!-- Stats Section -->
+        <div class="row mb-5">
+          <div class="col-12">
+            <h3 class="fw-bold mb-4">Your Booking Overview</h3>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stat-card">
+              <div class="stat-number" id="totalBookings">0</div>
+              <div class="stat-label">Total Bookings</div>
+              <i class="bi bi-calendar-check float-end fs-1 opacity-50"></i>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stat-card secondary">
+              <div class="stat-number" id="activeBookings">0</div>
+              <div class="stat-label">Active Stays</div>
+              <i class="bi bi-house-door float-end fs-1 opacity-50"></i>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stat-card success">
+              <div class="stat-number" id="upcomingBookings">0</div>
+              <div class="stat-label">Upcoming</div>
+              <i class="bi bi-arrow-up-circle float-end fs-1 opacity-50"></i>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stat-card warning">
+              <div class="stat-number">$<span id="totalSpent">0</span></div>
+              <div class="stat-label">Total Spent</div>
+              <i class="bi bi-currency-dollar float-end fs-1 opacity-50"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Recent Bookings -->
+          <div class="col-lg-8 mb-4">
+            <div class="card">
+              <div class="card-header bg-transparent">
+                <h5 class="card-title mb-0">
+                  <i class="bi bi-clock-history me-2"></i>Recent Bookings
+                </h5>
+              </div>
+              <div class="card-body">
+                <div id="recentBookings" class="row g-3">
+                  <div class="col-12 text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading your bookings...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Profile -->
+          <div class="col-lg-4">
+            <!-- Quick Actions -->
+            <div class="card mb-4">
+              <div class="card-header bg-transparent">
+                <h5 class="card-title mb-0">
+                  <i class="bi bi-lightning me-2"></i>Quick Actions
+                </h5>
+              </div>
+              <div class="card-body">
+                <div class="d-grid gap-2">
+                  <button class="btn btn-accent" onclick="window.location.href='rooms.html'">
+                    <i class="bi bi-plus-circle me-2"></i>Book New Room
+                  </button>
+                  <button class="btn btn-outline-primary" onclick="viewAllBookings()">
+                    <i class="bi bi-list-ul me-2"></i>View All Bookings
+                  </button>
+                  <button class="btn btn-outline-secondary" onclick="refreshDashboard()">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Refresh Data
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="card">
+              <div class="card-header bg-transparent">
+                <h5 class="card-title mb-0">
+                  <i class="bi bi-person-circle me-2"></i>Your Profile
+                </h5>
+              </div>
+              <div class="card-body">
+                <div class="text-center mb-3">
+                  <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <i class="bi bi-person-fill text-white fs-3"></i>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <h6 id="userFullName" class="fw-bold mb-1">Loading...</h6>
+                  <p class="text-muted small mb-2" id="userEmail">Loading...</p>
+                  <p class="text-muted small mb-0" id="memberSince">Member since: Loading...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Bookings -->
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                  <i class="bi bi-calendar-event me-2"></i>Upcoming Stays
+                </h5>
+                <span class="badge bg-primary" id="upcomingCount">0 upcoming</span>
+              </div>
+              <div class="card-body">
+                <div id="upcomingBookingsList" class="row g-3">
+                  <div class="col-12 text-center py-4">
+                    <p class="text-muted">No upcoming bookings found.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer text-white py-4 mt-auto">
+      <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <div>© <span id="year">2024</span> Bookify Hotel</div>
+        <div class="d-flex gap-3 fs-5">
+          <a class="text-white-50 hover-white" href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a class="text-white-50 hover-white" href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a class="text-white-50 hover-white" href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- API Configuration -->
+    <script src="js/api-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/bookings.js"></script>
+    
+    <script>
+      // Global variables
+      let userData = null;
+      let userStats = null;
+      let userBookings = null;
+
+      document.addEventListener('DOMContentLoaded', function() {
+        initializeUserDashboard();
+      });
+
+      async function initializeUserDashboard() {
+        try {
+          // Set current year
+          document.getElementById('year').textContent = new Date().getFullYear();
+          
+          // Check authentication
+          if (!AuthService.isAuthenticated()) {
+            window.location.href = 'login.html';
+            return;
+          }
+
+          // Get user data
+          userData = AuthService.getUserData();
+          if (!userData) {
+            throw new Error('No user data found');
+          }
+
+          // Update welcome message with user's name
+          updateWelcomeMessage(userData);
+          
+          // Update navigation
+          updateNavigation();
+          
+          // Load dashboard data
+          await loadDashboardData();
+          
+          // Add reveal animations
+          const reveals = document.querySelectorAll('.reveal');
+          reveals.forEach(reveal => {
+            reveal.classList.add('active');
+          });
+
+        } catch (error) {
+          console.error('Dashboard initialization failed:', error);
+          showError('Failed to load dashboard. Please try again.');
+        }
+      }
+
+      function updateWelcomeMessage(userData) {
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const welcomeSubtitle = document.getElementById('welcomeSubtitle');
+        const userFullName = document.getElementById('userFullName');
+        const userEmail = document.getElementById('userEmail');
+        const memberSince = document.getElementById('memberSince');
+
+        if (userData.firstName) {
+          welcomeMessage.textContent = `Hello, ${userData.firstName}!`;
+          welcomeSubtitle.textContent = `Welcome back to your personal dashboard`;
+          userFullName.textContent = `${userData.firstName} ${userData.lastName || ''}`.trim();
+        } else {
+          welcomeMessage.textContent = 'Hello, Welcome!';
+          userFullName.textContent = 'User';
+        }
+
+        if (userData.email) {
+          userEmail.textContent = userData.email;
+        }
+
+        // Set member since date (using current date as placeholder)
+        const joinDate = new Date().toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        memberSince.textContent = `Member since: ${joinDate}`;
+      }
+
+      async function loadDashboardData() {
+        try {
+          showLoadingState(true);
+          
+          // Load stats and bookings in parallel
+          [userStats, userBookings] = await Promise.all([
+            DashboardAPI.getUserStats(),
+            BookingsAPI.getMyBookings()
+          ]);
+
+          // Update the dashboard with loaded data
+          updateStats(userStats);
+          updateRecentBookings(userBookings);
+          updateUpcomingBookings(userBookings);
+
+        } catch (error) {
+          console.error('Failed to load dashboard data:', error);
+          showError('Failed to load dashboard data. Please refresh the page.');
+        } finally {
+          showLoadingState(false);
+        }
+      }
+
+      function updateStats(stats) {
+        if (!stats) return;
+
+        document.getElementById('totalBookings').textContent = stats.totalBookings || 0;
+        document.getElementById('activeBookings').textContent = stats.activeBookings || 0;
+        document.getElementById('upcomingBookings').textContent = stats.upcomingCheckIns || 0;
+        document.getElementById('totalSpent').textContent = stats.totalSpent || 0;
+      }
+
+      function updateRecentBookings(bookings) {
+        const container = document.getElementById('recentBookings');
+        
+        if (!bookings || bookings.length === 0) {
+          container.innerHTML = `
+            <div class="col-12 text-center py-4">
+              <i class="bi bi-calendar-x fs-1 text-muted mb-3"></i>
+              <p class="text-muted">No bookings found.</p>
+              <button class="btn btn-accent btn-sm" onclick="window.location.href='rooms.html'">
+                Book Your First Stay
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        // Show only recent 3 bookings
+        const recentBookings = bookings.slice(0, 3);
+        
+        container.innerHTML = recentBookings.map(booking => `
+          <div class="col-12">
+            <div class="card booking-card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-md-3">
+                    <div class="d-flex align-items-center">
+                      <div class="bg-primary rounded p-2 me-3">
+                        <i class="bi bi-house-door text-white"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-0">Room ${booking.roomNumber}</h6>
+                        <small class="text-muted">${booking.hotelName}</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <small class="text-muted">Check-in</small>
+                    <div class="fw-bold">${formatDate(booking.checkIn)}</div>
+                  </div>
+                  <div class="col-md-3">
+                    <small class="text-muted">Check-out</small>
+                    <div class="fw-bold">${formatDate(booking.checkOut)}</div>
+                  </div>
+                  <div class="col-md-2">
+                    <span class="badge ${getStatusBadgeClass(booking.status)} status-badge">
+                      ${booking.status}
+                    </span>
+                  </div>
+                  <div class="col-md-1 text-end">
+                    <button class="btn btn-outline-primary btn-sm" onclick="viewBookingDetails(${booking.id})">
+                      <i class="bi bi-eye"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function updateUpcomingBookings(bookings) {
+        const container = document.getElementById('upcomingBookingsList');
+        const countElement = document.getElementById('upcomingCount');
+        
+        if (!bookings) return;
+
+        // Filter upcoming bookings (future check-ins)
+        const upcomingBookings = bookings.filter(booking => {
+          const checkIn = new Date(booking.checkIn);
+          const today = new Date();
+          return checkIn > today && booking.status === 'Confirmed';
+        });
+
+        countElement.textContent = `${upcomingBookings.length} upcoming`;
+
+        if (upcomingBookings.length === 0) {
+          container.innerHTML = `
+            <div class="col-12 text-center py-4">
+              <i class="bi bi-calendar-plus fs-1 text-muted mb-3"></i>
+              <p class="text-muted">No upcoming stays scheduled.</p>
+              <button class="btn btn-accent btn-sm" onclick="window.location.href='rooms.html'">
+                Book Your Next Stay
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = upcomingBookings.map(booking => `
+          <div class="col-12">
+            <div class="card booking-card border-primary">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-md-4">
+                    <h6 class="mb-1">Room ${booking.roomNumber}</h6>
+                    <small class="text-muted">${booking.hotelName} • ${booking.numberOfNights} nights</small>
+                  </div>
+                  <div class="col-md-3">
+                    <small class="text-muted">Check-in</small>
+                    <div class="fw-bold text-primary">${formatDate(booking.checkIn)}</div>
+                  </div>
+                  <div class="col-md-3">
+                    <small class="text-muted">Check-out</small>
+                    <div class="fw-bold">${formatDate(booking.checkOut)}</div>
+                  </div>
+                  <div class="col-md-2 text-end">
+                    <span class="badge bg-success">Upcoming</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function getStatusBadgeClass(status) {
+        switch (status?.toLowerCase()) {
+          case 'confirmed':
+            return 'bg-success';
+          case 'pending':
+            return 'bg-warning';
+          case 'cancelled':
+            return 'bg-danger';
+          case 'completed':
+            return 'bg-secondary';
+          default:
+            return 'bg-info';
+        }
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      }
+
+      function showLoadingState(show) {
+        // You can add loading indicators here if needed
+      }
+
+      function showError(message) {
+        alert(message); // You can replace this with a toast notification
+      }
+
+      function viewBookingDetails(bookingId) {
+        alert(`Viewing details for booking #${bookingId}`);
+        // You can implement a modal or redirect to booking details page
+      }
+
+      function viewAllBookings() {
+        // For now, just show an alert. You can implement a bookings list page later.
+        alert('Showing all bookings feature coming soon!');
+      }
+
+      function refreshDashboard() {
+        loadDashboardData();
+      }
+
+      // Navigation update function
+      function updateNavigation() {
+        const navButtons = document.getElementById('navButtons');
+        if (!navButtons || !userData) return;
+
+        navButtons.innerHTML = `
+          <div class="dropdown">
+            <button class="btn btn-outline-light rounded-pill dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle me-1"></i>${userData.firstName || 'User'}
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="user-dashboard.html">My Dashboard</a></li>
+              ${AuthService.isAdmin() ? '<li><a class="dropdown-item" href="admin-dashboard.html">Admin Panel</a></li>' : ''}
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" onclick="handleLogout(event)">Logout</a></li>
+            </ul>
+          </div>
+        `;
+      }
+
+      function handleLogout(e) {
+        e.preventDefault();
+        AuthAPI.logout();
+      }
+    </script>
+  </body>
 </html>

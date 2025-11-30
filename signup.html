@@ -4,17 +4,23 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>bookify Hotel | Sign Up</title>
-    <link href="css/bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/normalize.css"/>
+    <link rel="stylesheet" href="css/all.min.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/override.css"/>
+    
     <link rel="icon" href="image/hotel-icon.png">
-    <link href="css/style.css" rel="stylesheet" />
-
-    <link rel="stylesheet" href="css/override.css"> 
   </head>
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
       <div class="container">
         <a class="navbar-brand fw-bold" href="index.html">Bookify<span class="gold-logo">Hotel</span></a>
@@ -42,7 +48,7 @@
       </div>
     </nav>
 
-    <section class="section section-bg">
+    <main class="flex-grow-1 section section-bg">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-12 col-md-10 col-lg-7">
@@ -50,14 +56,14 @@
               <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
                   <h1 class="fw-bold mb-1">Create your account</h1>
-                  <p class="text-muted">Join BlueGold for faster booking and exclusive deals.</p>
+                  <p class="text-muted">Join Bookify Hotel for faster booking and exclusive deals.</p>
                 </div>
                 <form id="signupForm" novalidate>
                   <div class="mb-3">
                     <label for="signupFullName" class="form-label">Full Name</label>
                     <div class="input-group">
-                      <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
-                      <input type="text" class="form-control" id="signupFullName" placeholder="John Doe" required>
+                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-person"></i></span>
+                      <input type="text" class="form-control border-start-0" id="signupFullName" placeholder="John Doe" required>
                     </div>
                     <div class="invalid-feedback">Please enter your full name.</div>
                   </div>
@@ -65,17 +71,25 @@
                   <div class="mb-3">
                     <label for="signupEmail" class="form-label">Email</label>
                     <div class="input-group">
-                      <span class="input-group-text bg-white"><i class="bi bi-envelope"></i></span>
-                      <input type="email" class="form-control" id="signupEmail" placeholder="name@example.com" required>
+                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-envelope"></i></span>
+                      <input type="email" class="form-control border-start-0" id="signupEmail" placeholder="name@example.com" required>
                     </div>
                     <div class="invalid-feedback">Please enter a valid email address.</div>
                   </div>
 
                   <div class="mb-3">
+                    <label for="signupPhone" class="form-label">Phone Number (Optional)</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-phone"></i></span>
+                      <input type="tel" class="form-control border-start-0" id="signupPhone" placeholder="+1 555 123 4567">
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
                     <label for="signupPassword" class="form-label">Password</label>
                     <div class="input-group">
-                      <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
-                      <input type="password" class="form-control" id="signupPassword" placeholder="••••••••" minlength="6" required>
+                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock"></i></span>
+                      <input type="password" class="form-control border-start-0" id="signupPassword" placeholder="••••••••" minlength="6" required>
                     </div>
                     <div class="invalid-feedback">Password must be at least 6 characters.</div>
                   </div>
@@ -83,8 +97,8 @@
                   <div class="mb-4">
                     <label for="signupConfirm" class="form-label">Confirm Password</label>
                     <div class="input-group">
-                      <span class="input-group-text bg-white"><i class="bi bi-lock-fill"></i></span>
-                      <input type="password" class="form-control" id="signupConfirm" placeholder="••••••••" minlength="6" required>
+                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock-fill"></i></span>
+                      <input type="password" class="form-control border-start-0" id="signupConfirm" placeholder="••••••••" minlength="6" required>
                     </div>
                     <div class="invalid-feedback">Passwords must match.</div>
                   </div>
@@ -93,18 +107,18 @@
                     <button type="submit" class="btn btn-accent btn-lg">Sign Up</button>
                   </div>
 
-                  <p class="text-center mt-3 mb-0 text-muted">Already have an account? <a href="login.html" class="link-primary">Log in</a></p>
+                  <p class="text-center mt-3 mb-0 text-muted">Already have an account? <a href="login.html" class="text-primary text-decoration-none">Log in</a></p>
                 </form>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </main>
 
     <footer class="footer text-white py-4 mt-auto">
       <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-        <div>© <span id="year"></span> Bookify Hotel</div>
+        <div>© <span id="year">2024</span> Bookify Hotel</div>
         <div class="d-flex gap-3 fs-5">
           <a class="text-white-50 hover-white" href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
           <a class="text-white-50 hover-white" href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
@@ -113,8 +127,106 @@
       </div>
     </footer>
 
+    <!-- Scripts (NO STRIPE) -->
     <script src="js/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- API Configuration -->
+    <script src="js/api-config.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Set current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Initialize signup form
+        const signupForm = document.getElementById('signupForm');
+        if (signupForm) {
+          signupForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await handleSignup();
+          });
+        }
+
+        // Password confirmation validation
+        const passwordInput = document.getElementById('signupPassword');
+        const confirmInput = document.getElementById('signupConfirm');
+        
+        confirmInput.addEventListener('input', function() {
+          if (passwordInput.value !== confirmInput.value) {
+            confirmInput.setCustomValidity('Passwords do not match');
+          } else {
+            confirmInput.setCustomValidity('');
+          }
+        });
+
+        // Add reveal animations
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach(reveal => {
+          reveal.classList.add('active');
+        });
+      });
+
+      async function handleSignup() {
+        const fullName = document.getElementById('signupFullName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const phone = document.getElementById('signupPhone').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('signupConfirm').value;
+
+        if (!fullName || !email || !password) {
+          alert('Please fill in all required fields');
+          return;
+        }
+
+        if (password.length < 6) {
+          alert('Password must be at least 6 characters');
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          alert('Passwords do not match');
+          return;
+        }
+
+        const userData = {
+          firstName: fullName.split(' ')[0],
+          lastName: fullName.split(' ').slice(1).join(' ') || '',
+          email: email,
+          phoneNumber: phone || '',
+          password: password,
+          confirmPassword: confirmPassword
+        };
+
+        try {
+          const signupBtn = document.querySelector('#signupForm button[type="submit"]');
+          signupBtn.disabled = true;
+          signupBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Creating account...';
+
+          const result = await AuthAPI.register(userData);
+          
+          if (result.success) {
+            if (result.requiresOtp) {
+              alert('Registration successful! Please check your email for verification code.');
+              window.location.href = `otp-verification.html?email=${encodeURIComponent(email)}`;
+            } else {
+              alert('Registration successful!');
+              window.location.href = 'user-dashboard.html';
+            }
+          } else {
+            throw new Error(result.message || 'Registration failed');
+          }
+          
+        } catch (error) {
+          console.error('Registration failed:', error);
+          alert(error.message || 'Registration failed. Please try again.');
+        } finally {
+          const signupBtn = document.querySelector('#signupForm button[type="submit"]');
+          signupBtn.disabled = false;
+          signupBtn.innerHTML = 'Sign Up';
+        }
+      }
+    </script>
   </body>
 </html>

@@ -1,351 +1,879 @@
-/* Global Scripts for Grand Vista Hotel - Modern Theme */
-$(function () {
-  const yearSpan = document.getElementById('year');
-  if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-
-  // Navbar solid on scroll
-  const nav = document.querySelector('.navbar');
-  function handleNavScroll() {
-    if (!nav) return;
-    if (window.scrollY > 10) nav.classList.add('scrolled');
-    else nav.classList.remove('scrolled');
-  }
-  window.addEventListener('scroll', handleNavScroll, { passive: true });
-  handleNavScroll();
-
-  // Smooth scroll
-  $(document).on('click', 'a[href^="#"]:not([data-bs-toggle])', function (e) {
-    const targetId = this.getAttribute('href');
-    if (!targetId || targetId === '#') return;
-    const target = document.querySelector(targetId);
-    if (target) {
-      e.preventDefault();
-      const navHeight = nav ? nav.getBoundingClientRect().height : 72;
-      const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 8;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }
-  });
-
-  // Reveal on scroll
-  const revealEls = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: '0px 0px -15% 0px', threshold: 0.05 });
-    revealEls.forEach(el => observer.observe(el));
-  }
-
-  // Alert helper
-  function showAlert(containerId, message) {
-    const html = `
-      <div class="alert alert-success alert-dismissible fade show" role="alert" style="background-color: var(--brand-gold); color: var(--brand-dark);">
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    `;
-    const container = document.getElementById(containerId);
-    if (container) container.innerHTML = html;
-  }
-
-  // Booking form
-  const $bookingForm = $('#bookingForm');
-  if ($bookingForm.length) {
-    $bookingForm.on('submit', function (e) {
-      e.preventDefault();
-      let valid = true;
-      $(this).find(':input[required]').each(function () {
-        if (!$(this).val()) { $(this).addClass('is-invalid'); valid = false; } 
-        else { $(this).removeClass('is-invalid'); }
-      });
-      if (!valid) return;
-
-      const modalEl = document.getElementById('bookingSuccessModal');
-      if (modalEl) new bootstrap.Modal(modalEl).show();
-      else showAlert('bookingAlert', 'Booking submitted successfully!');
-
-      // حفظ الحجز للـ User
-      const roomInfo = document.getElementById('roomInfo');
-      const roomName = roomInfo ? roomInfo.querySelector('strong').nextSibling.textContent.trim() : '';
-      const roomPrice = roomInfo ? roomInfo.querySelectorAll('strong')[1].nextSibling.textContent.trim() : '';
-      const date = document.getElementById('bookingDate')?.value || new Date().toLocaleDateString();
-
-      let userBookings = JSON.parse(localStorage.getItem('user_bookings')) || [];
-      userBookings.push({ room: roomName, price: roomPrice, date });
-      localStorage.setItem('user_bookings', JSON.stringify(userBookings));
-
-      this.reset();
-    });
-
-    $bookingForm.on('input change', ':input', function () { if ($(this).val()) $(this).removeClass('is-invalid'); });
-  }
-
-  // Contact form
-  const $contactForm = $('#contactForm');
-  if ($contactForm.length) {
-    $contactForm.on('submit', function (e) {
-      e.preventDefault();
-      let valid = true;
-      $(this).find(':input[required]').each(function () {
-        if (!$(this).val()) { $(this).addClass('is-invalid'); valid = false; } 
-        else { $(this).removeClass('is-invalid'); }
-      });
-      if (!valid) return;
-
-      showAlert('contactAlert', 'Message sent successfully!');
-      this.reset();
-    });
-    $contactForm.on('input change', ':input', function () { if ($(this).val()) $(this).removeClass('is-invalid'); });
-  }
-});
-
-/* Room to Booking page */
+// DOM ready function
 document.addEventListener('DOMContentLoaded', function() {
-  const bookButtons = document.querySelectorAll('.room-card .btn-accent, .room-card .btn-primary');
-
-  bookButtons.forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      const card = btn.closest('.room-card');
-      const roomName = card.querySelector('.card-title').innerText;
-      const roomPrice = card.querySelector('.price').innerText.replace('$','').replace('/night','').trim();
-      window.location.href = `booking.html?room=${encodeURIComponent(roomName)}&price=${encodeURIComponent(roomPrice)}`;
-    });
-  });
-
-  if (window.location.pathname.includes('booking.html')) {
-    const params = new URLSearchParams(window.location.search);
-    const room = params.get('room');
-    const price = params.get('price');
-
-    if (room && price) {
-      let roomInfoDiv = document.getElementById('roomInfo');
-      if (!roomInfoDiv) {
-        roomInfoDiv = document.createElement('div');
-        roomInfoDiv.id = 'roomInfo';
-        roomInfoDiv.className = 'mb-4 p-3 border rounded bg-light';
-        const form = document.getElementById('bookingForm');
-        form.parentNode.insertBefore(roomInfoDiv, form);
-      }
-      roomInfoDiv.innerHTML = `<strong>Room:</strong> ${room}<br><strong>Price:</strong> $${price}/night`;
-    }
-  }
+    initializeApp();
 });
 
-/* Login + Dashboard + Navbar dynamic */
-document.addEventListener("DOMContentLoaded", function () {
-  // Load navbar dynamically
-  const navbarPlaceholder = document.getElementById("navbar-placeholder");
-  if (navbarPlaceholder) {
-    fetch("navbar.html")
-      .then(res => res.text())
-      .then(data => {
-        navbarPlaceholder.innerHTML = data;
-
-        const isAdmin = localStorage.getItem("is_admin");
-        const userEmail = localStorage.getItem("user_email");
-        const navLinks = document.getElementById("navLinks");
-        const navButtons = document.getElementById("navButtons");
-
-        // مسح أزرار Login/SignUp الأصلية
-        if (navButtons) navButtons.innerHTML = "";
-
-        if (isAdmin === "true") {
-          const li = document.createElement("li");
-          li.className = "nav-item";
-          li.innerHTML = `<a class="nav-link" href="admin-dashboard.html">Admin Dashboard</a>`;
-          navLinks.appendChild(li);
-
-          const logoutBtn = document.createElement("a");
-          logoutBtn.className = "btn btn-outline-light rounded-pill";
-          logoutBtn.id = "adminLogoutBtn";
-          logoutBtn.textContent = "Logout";
-          logoutBtn.addEventListener("click", function () {
-            localStorage.removeItem("is_admin");
-            localStorage.removeItem("user_email");
-            window.location.href = "index.html";
-          });
-          navButtons.appendChild(logoutBtn);
-        } else if (userEmail) {
-          const li = document.createElement("li");
-          li.className = "nav-item";
-          li.innerHTML = `<a class="nav-link" href="user-dashboard.html">My Dashboard</a>`;
-          navLinks.appendChild(li);
-
-          const logoutBtn = document.createElement("a");
-          logoutBtn.className = "btn btn-outline-light rounded-pill";
-          logoutBtn.id = "userLogoutBtn";
-          logoutBtn.textContent = "Logout";
-          logoutBtn.addEventListener("click", function () {
-            localStorage.removeItem("user_email");
-            localStorage.removeItem("is_admin");
-            window.location.href = "index.html";
-          });
-          navButtons.appendChild(logoutBtn);
-        } else {
-          const loginBtn = document.createElement("a");
-          loginBtn.className = "btn btn-outline-light rounded-pill";
-          loginBtn.href = "login.html";
-          loginBtn.textContent = "Login";
-          navButtons.appendChild(loginBtn);
-
-          const signupBtn = document.createElement("a");
-          signupBtn.className = "btn btn-accent rounded-pill";
-          signupBtn.href = "signup.html";
-          signupBtn.textContent = "Sign Up";
-          navButtons.appendChild(signupBtn);
-        }
-      });
-  }
-
-  // Login handling
-  const loginForm = document.getElementById("loginForm");
-  const ADMIN_EMAIL = "admin@hotel.com";
-  const ADMIN_PASSWORD = "admin123";
-  const USER_EMAIL = "user@hotel.com";
-  const USER_PASSWORD = "user123";
-
-  if (loginForm) {
-    loginForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value.trim();
-      if (!email || !password) return;
-
-      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        localStorage.setItem("is_admin", "true");
-        localStorage.setItem("user_email", email);
-        window.location.href = "admin-dashboard.html";
-      } else if (email === USER_EMAIL && password === USER_PASSWORD) {
-        localStorage.setItem("is_admin", "false");
-        localStorage.setItem("user_email", email);
-        window.location.href = "user-dashboard.html";
-      } else {
-        const existingAlert = document.getElementById("loginError");
-        if (!existingAlert) {
-          const alertDiv = document.createElement("div");
-          alertDiv.id = "loginError";
-          alertDiv.className = "alert alert-danger mt-3";
-          alertDiv.innerText = "Incorrect email or password!";
-          loginForm.appendChild(alertDiv);
-        } else {
-          existingAlert.innerText = "Incorrect email or password!";
-        }
-      }
-    });
-  }
-
-  // Protect Admin Dashboard
-  if (window.location.pathname.includes("admin-dashboard.html")) {
-    const isAdmin = localStorage.getItem("is_admin");
-    if (isAdmin !== "true") window.location.href = "login.html";
-  }
-
-  // Protect User Dashboard & show info
-  if (window.location.pathname.includes("user-dashboard.html")) {
-    const isAdmin = localStorage.getItem("is_admin");
-    const userEmail = localStorage.getItem("user_email");
-    if (!userEmail || isAdmin === "true") window.location.href = "login.html";
-
-    const userNameSpan = document.getElementById("userName");
-    if (userNameSpan) {
-      const nameFromEmail = userEmail.split("@")[0];
-      const formattedName = nameFromEmail.replace(/[._-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-      userNameSpan.textContent = formattedName;
+function initializeApp() {
+    // Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // Initialize based on current page
+    const currentPage = window.location.pathname.split('/').pop();
+    
+    switch(currentPage) {
+        case 'index.html':
+        case '':
+            initializeHomePage();
+            break;
+        case 'rooms.html':
+            initializeRoomsPage();
+            break;
+        case 'booking.html':
+            initializeBookingPage();
+            break;
+        case 'login.html':
+            initializeLoginPage();
+            break;
+        case 'signup.html':
+            initializeSignupPage();
+            break;
+        case 'user-dashboard.html':
+            initializeUserDashboard();
+            break;
+        case 'admin-dashboard.html':
+            initializeAdminDashboard();
+            break;
+        case 'contact.html':
+            initializeContactPage();
+            break;
+        case 'about.html':
+            initializeAboutPage();
+            break;
     }
 
-    const bookingsContainer = document.getElementById("userBookings");
-    if (bookingsContainer) {
-      const userBookings = JSON.parse(localStorage.getItem("user_bookings")) || [];
-      if (userBookings.length === 0) {
-        bookingsContainer.innerHTML = "<p>No bookings yet.</p>";
-      } else {
-        const list = document.createElement("ul");
-        list.className = "list-group";
-        userBookings.forEach(b => {
-          const li = document.createElement("li");
-          li.className = "list-group-item";
-          li.innerHTML = `<strong>Room:</strong> ${b.room} <br> <strong>Price:</strong> ${b.price}/night <br> <strong>Date:</strong> ${b.date}`;
-          list.appendChild(li);
-        });
-        bookingsContainer.innerHTML = "";
-        bookingsContainer.appendChild(list);
-      }
-    }
-  }
-
-
-// ===========================
-// Floating Chatbot Logic
-// ===========================
-const chatBtn = document.getElementById("chatbot-btn");
-const chatWindow = document.getElementById("chatbot-window");
-const closeChat = document.getElementById("chat-close");
-const chatBody = document.getElementById("chat-body");
-const chatInput = document.getElementById("chatMessage");
-const sendBtn = document.getElementById("sendMessage");
-
-// تأكد أن عناصر الشات موجودة في الصفحة
-if (chatBtn && chatWindow) {
-
-    // فتح/قفل الشات
-    chatBtn.addEventListener("click", function () {
-        chatWindow.style.display = (chatWindow.style.display === "flex") ? "none" : "flex";
-        chatInput.focus();
-    });
-
-    closeChat.addEventListener("click", function () {
-    chatWindow.style.display = "none";
-    chatBtn.style.display = "flex";
-});
-
-
-    // إضافة الرسائل
-    function appendMessage(text, sender = "bot") {
-        const msg = document.createElement("div");
-        msg.classList.add("chat-message", sender);
-        msg.textContent = text;
-        chatBody.appendChild(msg);
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    // ردود البوت
-    function getBotReply(userText) {
-        const t = userText.toLowerCase();
-
-        if (t.includes("حجز") || t.includes("booking")) return "للحجز يمكنك زيارة صفحة الغرف Rooms أو التواصل معنا 👌";
-        if (t.includes("سعر") || t.includes("price")) return "الأسعار تختلف حسب نوع الغرفة — شاهدها في قسم Rooms.";
-        if (t.includes("غرف") || t.includes("room")) return "لدينا عدة أنواع من الغرف — الفردية والمزدوجة والجناح الفاخر.";
-        if (t.includes("موقع") || t.includes("location")) return "الفندق يقع بالقرب من وسط المدينة والمعالم السياحية.";
-        if (t.includes("مطعم") || t.includes("اكل")) return "نعم، لدينا مطعم فاخر يقدم بوفيه وأكلات عالمية.";
-        if (t.includes("بسين") || t.includes("pool")) return "نعم يوجد حمام سباحة خارجي بإطلالة جميلة.";
-
-        return "شكرًا لرسالتك 😊 كيف يمكنني مساعدتك؟";
-    }
-
-    // إرسال
-    function handleSend() {
-        const text = chatInput.value.trim();
-        if (!text) return;
-
-        appendMessage(text, "user");
-        chatInput.value = "";
-
-        setTimeout(() => appendMessage(getBotReply(text), "bot"), 300);
-    }
-
-    sendBtn.addEventListener("click", handleSend);
-    chatInput.addEventListener("keydown", e => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            handleSend();
-        }
-    });
-
+    // Initialize common components
+    initializeChatWidget();
+    updateNavigation();
 }
 
-});
+// Utility Functions
+function showToast(message, type = 'info') {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+        document.body.appendChild(toastContainer);
+    }
+    
+    const toastId = 'toast-' + Date.now();
+    const bgColor = type === 'error' ? 'bg-danger' : 
+                   type === 'success' ? 'bg-success' : 
+                   type === 'warning' ? 'bg-warning' : 'bg-info';
+    
+    const toastHTML = `
+        <div id="${toastId}" class="toast align-items-center text-white ${bgColor} border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+    
+    toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+    
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+    
+    // Remove toast from DOM after it's hidden
+    toastElement.addEventListener('hidden.bs.toast', () => {
+        toastElement.remove();
+    });
+}
+
+function showLoading(button, show = true) {
+    if (show) {
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Loading...';
+    } else {
+        button.disabled = false;
+        button.innerHTML = button.getAttribute('data-original-text') || 'Submit';
+    }
+}
+
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Navigation
+function updateNavigation() {
+    const navButtons = document.getElementById('navButtons');
+    const mobileNavButtons = document.querySelector('.navbar-nav.d-lg-none');
+    
+    if (!AuthService.isAuthenticated()) {
+        return; // Keep default login/signup buttons
+    }
+    
+    const userData = AuthService.getUserData();
+    
+    // Update desktop navigation
+    if (navButtons) {
+        navButtons.innerHTML = `
+            <div class="dropdown">
+                <button class="btn btn-outline-light rounded-pill dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle me-1"></i>${userData.firstName}
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="user-dashboard.html">My Dashboard</a></li>
+                    ${AuthService.isAdmin() ? '<li><a class="dropdown-item" href="admin-dashboard.html">Admin Panel</a></li>' : ''}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
+                </ul>
+            </div>
+        `;
+    }
+    
+    // Update mobile navigation
+    if (mobileNavButtons) {
+        const existingButtons = mobileNavButtons.querySelectorAll('.nav-item:has(.btn)');
+        existingButtons.forEach(btn => btn.remove());
+        
+        const userItem = document.createElement('li');
+        userItem.className = 'nav-item';
+        userItem.innerHTML = `
+            <div class="dropdown">
+                <button class="btn btn-outline-light w-100 rounded-pill dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle me-1"></i>${userData.firstName}
+                </button>
+                <ul class="dropdown-menu w-100">
+                    <li><a class="dropdown-item" href="user-dashboard.html">My Dashboard</a></li>
+                    ${AuthService.isAdmin() ? '<li><a class="dropdown-item" href="admin-dashboard.html">Admin Panel</a></li>' : ''}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#" id="logoutBtnMobile">Logout</a></li>
+                </ul>
+            </div>
+        `;
+        mobileNavButtons.appendChild(userItem);
+    }
+    
+    // Add logout event listeners
+    document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
+    document.getElementById('logoutBtnMobile')?.addEventListener('click', handleLogout);
+}
+
+function handleLogout(e) {
+    e.preventDefault();
+    AuthAPI.logout();
+}
+
+// Page Initializers
+function initializeHomePage() {
+    loadFeaturedRooms();
+}
+
+function initializeRoomsPage() {
+    loadAllRooms();
+}
+
+function initializeBookingPage() {
+    setupBookingForm();
+}
+
+function initializeLoginPage() {
+    setupLoginForm();
+}
+
+function initializeSignupPage() {
+    setupSignupForm();
+}
+
+function initializeContactPage() {
+    setupContactForm();
+}
+
+function initializeAboutPage() {
+    // About page doesn't need special initialization
+}
+
+function initializeUserDashboard() {
+    if (!AuthService.isAuthenticated()) {
+        window.location.href = 'login.html';
+        return;
+    }
+    loadUserDashboard();
+}
+
+function initializeAdminDashboard() {
+    if (!AuthService.isAuthenticated() || !AuthService.isAdmin()) {
+        window.location.href = 'login.html';
+        return;
+    }
+    loadAdminDashboard();
+}
+
+// Chat Widget
+function initializeChatWidget() {
+    const chatBtn = document.getElementById('chatbot-btn');
+    const chatWindow = document.getElementById('chatbot-window');
+    const chatClose = document.getElementById('chat-close');
+    
+    if (chatBtn && chatWindow && chatClose) {
+        chatBtn.addEventListener('click', () => {
+            chatWindow.style.display = 'block';
+            chatBtn.style.display = 'none';
+        });
+        
+        chatClose.addEventListener('click', () => {
+            chatWindow.style.display = 'none';
+            chatBtn.style.display = 'block';
+        });
+        
+        // Setup chat option buttons
+        const optButtons = document.querySelectorAll('.opt-btn');
+        optButtons.forEach(button => {
+            button.addEventListener('click', async function() {
+                const value = this.getAttribute('data-val');
+                await handleChatOption(value);
+            });
+        });
+    }
+}
+
+async function handleChatOption(option) {
+    const messages = {
+        '1': 'Showing all rooms...',
+        '2': 'Showing available rooms...',
+        '3': 'Showing recent bookings...',
+        '4': 'Showing room type statistics...'
+    };
+    
+    showToast(messages[option] || 'Processing your request...', 'info');
+    
+    try {
+        const response = await ChatAPI.sendMessage(`Option ${option}`);
+        console.log('Chat response:', response);
+    } catch (error) {
+        console.error('Chat error:', error);
+    }
+}
+
+// Home Page Functions
+async function loadFeaturedRooms() {
+    try {
+        if (!AuthService.isAuthenticated()) {
+            return; // Don't load rooms if not authenticated
+        }
+        
+        const rooms = await RoomsAPI.getAllRooms();
+        // You can display featured rooms in a carousel or section
+        console.log('Featured rooms loaded:', rooms);
+    } catch (error) {
+        console.error('Failed to load featured rooms:', error);
+    }
+}
+
+// Rooms Page Functions
+async function loadAllRooms() {
+    try {
+        if (!AuthService.isAuthenticated()) {
+            showToast('Please login to view rooms', 'warning');
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        const rooms = await RoomsAPI.getAllRooms();
+        displayRooms(rooms);
+    } catch (error) {
+        console.error('Failed to load rooms:', error);
+        showToast('Failed to load rooms. Please try again.', 'error');
+    }
+}
+
+function displayRooms(rooms) {
+    const roomsContainer = document.querySelector('.row.g-4');
+    if (!roomsContainer) return;
+    
+    roomsContainer.innerHTML = rooms.map(room => `
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card room-card h-100 reveal">
+                <div class="card-img-container">
+                    <img src="image/room-${room.id}.jpg" class="card-img-top" alt="${room.type} Room" 
+                         onerror="this.src='image/room-placeholder.jpg'">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">${room.type} Room</h5>
+                    <p class="card-text text-muted">Room ${room.roomNumber} • ${room.hotelName}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="price fw-bold">$${room.pricePerNight}/night</span>
+                        <button class="btn btn-accent" onclick="bookRoom(${room.id})" ${!room.isAvailable ? 'disabled' : ''}>
+                            ${room.isAvailable ? 'Book Now' : 'Not Available'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function bookRoom(roomId) {
+    window.location.href = `booking.html?roomId=${roomId}`;
+}
+
+// Booking Page Functions
+async function setupBookingForm() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get('roomId');
+    
+    // Set minimum dates for check-in/check-out
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('checkin').min = today;
+    document.getElementById('checkout').min = today;
+    
+    if (roomId) {
+        try {
+            const room = await RoomsAPI.getRoomById(roomId);
+            updateRoomInfo(room);
+        } catch (error) {
+            console.error('Failed to load room details:', error);
+            showToast('Failed to load room details. Please try again.', 'error');
+        }
+    } else {
+        // Default room if no roomId provided
+        updateRoomInfo({
+            type: 'Deluxe Sea View',
+            pricePerNight: 120,
+            roomNumber: '101'
+        });
+    }
+    
+    // Setup form submission
+    document.getElementById('showPayment')?.addEventListener('click', async function(e) {
+        e.preventDefault();
+        await submitBooking();
+    });
+    
+    // Setup payment cancellation
+    document.getElementById('cancelPayment')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('payment-block').style.display = 'none';
+    });
+    
+    setupDateValidation();
+}
+
+function updateRoomInfo(room) {
+    document.getElementById('roomName').textContent = `${room.type} Room ${room.roomNumber ? `- ${room.roomNumber}` : ''}`;
+    document.getElementById('roomPrice').textContent = `$${room.pricePerNight} USD`;
+    document.getElementById('roomPrice').setAttribute('data-amount', room.pricePerNight);
+}
+
+function setupDateValidation() {
+    const checkinInput = document.getElementById('checkin');
+    const checkoutInput = document.getElementById('checkout');
+    
+    checkinInput.addEventListener('change', function() {
+        if (this.value) {
+            checkoutInput.min = this.value;
+            if (checkoutInput.value && checkoutInput.value < this.value) {
+                checkoutInput.value = '';
+            }
+        }
+    });
+}
+
+async function submitBooking() {
+    // Basic form validation
+    if (!validateBookingForm()) {
+        return;
+    }
+    
+    if (!AuthService.isAuthenticated()) {
+        showToast('Please login to book a room', 'warning');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = parseInt(urlParams.get('roomId')) || 1;
+    
+    const bookingData = {
+        roomId: roomId,
+        checkIn: document.getElementById('checkin').value + 'T12:00:00.000Z',
+        checkOut: document.getElementById('checkout').value + 'T12:00:00.000Z'
+    };
+    
+    try {
+        const showPaymentBtn = document.getElementById('showPayment');
+        showLoading(showPaymentBtn, true);
+        
+        const booking = await BookingsAPI.createBooking(bookingData);
+        
+        showToast('Booking created successfully! Proceeding to payment...', 'success');
+        
+        // Store booking info for payment
+        localStorage.setItem('currentBooking', JSON.stringify(booking));
+        
+        // Setup payment with the created booking
+        await setupPayment(booking);
+        
+    } catch (error) {
+        console.error('Booking failed:', error);
+        showToast('Failed to create booking. Please try again.', 'error');
+    } finally {
+        const showPaymentBtn = document.getElementById('showPayment');
+        showLoading(showPaymentBtn, false);
+    }
+}
+
+function validateBookingForm() {
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const checkin = document.getElementById('checkin').value;
+    const checkout = document.getElementById('checkout').value;
+    const guests = document.getElementById('guests').value;
+
+    if (!fullName) {
+        showToast('Please enter your full name', 'error');
+        return false;
+    }
+    
+    if (!email || !isValidEmail(email)) {
+        showToast('Please enter a valid email address', 'error');
+        return false;
+    }
+    
+    if (!phone) {
+        showToast('Please enter your phone number', 'error');
+        return false;
+    }
+    
+    if (!checkin) {
+        showToast('Please select check-in date', 'error');
+        return false;
+    }
+    
+    if (!checkout) {
+        showToast('Please select check-out date', 'error');
+        return false;
+    }
+    
+    if (checkout <= checkin) {
+        showToast('Check-out date must be after check-in date', 'error');
+        return false;
+    }
+    
+    if (!guests) {
+        showToast('Please select number of guests', 'error');
+        return false;
+    }
+    
+    return true;
+}
+
+async function setupPayment(booking) {
+    // Show payment block
+    const paymentBlock = document.getElementById('payment-block');
+    paymentBlock.style.display = 'block';
+    
+    // Prefill payment form with booking info
+    document.getElementById('cardholder-name').value = document.getElementById('fullName').value.trim();
+    document.getElementById('cardholder-email').value = document.getElementById('email').value.trim();
+    
+    // Calculate total amount
+    const checkIn = new Date(booking.checkIn);
+    const checkOut = new Date(booking.checkOut);
+    const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+    const totalAmount = nights * booking.pricePerNight;
+    
+    // Setup Stripe payment
+    await initializeStripePayment(booking.id, totalAmount);
+}
+
+async function initializeStripePayment(bookingId, amount) {
+    if (typeof Stripe === 'undefined') {
+        console.error('Stripe.js not loaded');
+        showToast('Payment system not available. Please try again later.', 'error');
+        return;
+    }
+    
+    if (!STRIPE_PUBLISHABLE_KEY || STRIPE_PUBLISHABLE_KEY.includes('REPLACE_ME')) {
+        console.warn('Stripe publishable key not configured');
+        showToast('Payment configuration missing. Please contact support.', 'error');
+        return;
+    }
+    
+    const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+    const elements = stripe.elements();
+    
+    const style = {
+        base: {
+            fontSize: '16px',
+            color: '#111827',
+            '::placeholder': { color: '#9ca3af' },
+            fontFamily: 'Open Sans, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial'
+        },
+        invalid: { color: '#dc2626' }
+    };
+    
+    const card = elements.create('card', { style, hidePostalCode: true });
+    card.mount('#card-element');
+    
+    const cardErrors = document.getElementById('card-errors');
+    card.on('change', event => {
+        cardErrors.textContent = event.error ? event.error.message : '';
+    });
+    
+    const payBtn = document.getElementById('payBtn');
+    payBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        await processPayment(stripe, card, bookingId, amount);
+    });
+}
+
+async function processPayment(stripe, card, bookingId, amount) {
+    const payBtn = document.getElementById('payBtn');
+    const cardholderName = document.getElementById('cardholder-name').value.trim();
+    const cardholderEmail = document.getElementById('cardholder-email').value.trim();
+    
+    if (!cardholderName || !cardholderEmail) {
+        showToast('Please enter name and email for the card', 'error');
+        return;
+    }
+    
+    try {
+        showLoading(payBtn, true);
+        
+        const paymentData = {
+            bookingId: bookingId,
+            amount: Math.round(amount * 100), // Convert to cents
+            currency: 'usd',
+            description: `Hotel Booking #${bookingId}`
+        };
+        
+        const paymentIntent = await PaymentAPI.createPaymentIntent(paymentData);
+        
+        const { error, paymentIntent: confirmedPayment } = await stripe.confirmCardPayment(
+            paymentIntent.clientSecret,
+            {
+                payment_method: {
+                    card: card,
+                    billing_details: {
+                        name: cardholderName,
+                        email: cardholderEmail,
+                    },
+                }
+            }
+        );
+        
+        if (error) {
+            throw new Error(error.message);
+        }
+        
+        if (confirmedPayment.status === 'succeeded') {
+            await handleSuccessfulPayment(bookingId, confirmedPayment.id);
+        } else {
+            throw new Error('Payment not completed');
+        }
+        
+    } catch (error) {
+        console.error('Payment failed:', error);
+        showToast(`Payment failed: ${error.message}`, 'error');
+    } finally {
+        showLoading(payBtn, false);
+    }
+}
+
+async function handleSuccessfulPayment(bookingId, paymentIntentId) {
+    try {
+        const paymentStatus = await PaymentAPI.checkPaymentStatus(paymentIntentId);
+        
+        if (paymentStatus.success) {
+            const successModal = new bootstrap.Modal(document.getElementById('bookingSuccessModal'));
+            successModal.show();
+            
+            localStorage.removeItem('currentBooking');
+            
+            setTimeout(() => {
+                window.location.href = 'user-dashboard.html';
+            }, 3000);
+            
+        } else {
+            throw new Error(paymentStatus.message || 'Payment verification failed');
+        }
+        
+    } catch (error) {
+        console.error('Payment verification failed:', error);
+        showToast('Payment verification failed. Please contact support.', 'error');
+    }
+}
+
+// Login Page Functions
+function setupLoginForm() {
+    const loginForm = document.getElementById('loginForm');
+    if (!loginForm) return;
+    
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        await handleLogin();
+    });
+}
+
+async function handleLogin() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
+    
+    if (!email || !password) {
+        showToast('Please fill in all fields', 'error');
+        return;
+    }
+    
+    if (!isValidEmail(email)) {
+        showToast('Please enter a valid email address', 'error');
+        return;
+    }
+    
+    try {
+        const loginBtn = document.querySelector('#loginForm button[type="submit"]');
+        showLoading(loginBtn, true);
+        
+        const result = await AuthAPI.login({
+            email: email,
+            password: password
+        });
+        
+        if (result.success) {
+            showToast('Login successful!', 'success');
+            setTimeout(() => {
+                window.location.href = 'user-dashboard.html';
+            }, 1000);
+        } else {
+            throw new Error(result.message || 'Login failed');
+        }
+        
+    } catch (error) {
+        console.error('Login failed:', error);
+        showToast(error.message || 'Login failed. Please try again.', 'error');
+    } finally {
+        const loginBtn = document.querySelector('#loginForm button[type="submit"]');
+        showLoading(loginBtn, false);
+    }
+}
+
+// Signup Page Functions
+function setupSignupForm() {
+    const signupForm = document.getElementById('signupForm');
+    if (!signupForm) return;
+    
+    signupForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        await handleSignup();
+    });
+    
+    // Password confirmation validation
+    const passwordInput = document.getElementById('signupPassword');
+    const confirmInput = document.getElementById('signupConfirm');
+    
+    confirmInput.addEventListener('input', function() {
+        if (passwordInput.value !== confirmInput.value) {
+            confirmInput.setCustomValidity('Passwords do not match');
+        } else {
+            confirmInput.setCustomValidity('');
+        }
+    });
+}
+
+async function handleSignup() {
+    const formData = new FormData(document.getElementById('signupForm'));
+    const userData = {
+        firstName: formData.get('signupFullName').split(' ')[0],
+        lastName: formData.get('signupFullName').split(' ').slice(1).join(' ') || '',
+        email: formData.get('signupEmail'),
+        phoneNumber: formData.get('signupPhone') || '',
+        password: formData.get('signupPassword'),
+        confirmPassword: formData.get('signupConfirm')
+    };
+    
+    if (!userData.firstName || !userData.email || !userData.password) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
+    
+    if (!isValidEmail(userData.email)) {
+        showToast('Please enter a valid email address', 'error');
+        return;
+    }
+    
+    if (userData.password.length < 6) {
+        showToast('Password must be at least 6 characters', 'error');
+        return;
+    }
+    
+    if (userData.password !== userData.confirmPassword) {
+        showToast('Passwords do not match', 'error');
+        return;
+    }
+    
+    try {
+        const signupBtn = document.querySelector('#signupForm button[type="submit"]');
+        showLoading(signupBtn, true);
+        
+        const result = await AuthAPI.register(userData);
+        
+        if (result.success) {
+            if (result.requiresOtp) {
+                showToast('Registration successful! Please check your email for verification code.', 'success');
+                // Redirect to OTP verification page or show OTP input
+                setTimeout(() => {
+                    window.location.href = `otp-verification.html?email=${encodeURIComponent(userData.email)}`;
+                }, 2000);
+            } else {
+                showToast('Registration successful!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'user-dashboard.html';
+                }, 1000);
+            }
+        } else {
+            throw new Error(result.message || 'Registration failed');
+        }
+        
+    } catch (error) {
+        console.error('Registration failed:', error);
+        showToast(error.message || 'Registration failed. Please try again.', 'error');
+    } finally {
+        const signupBtn = document.querySelector('#signupForm button[type="submit"]');
+        showLoading(signupBtn, false);
+    }
+}
+
+// Contact Page Functions
+function setupContactForm() {
+    const contactForm = document.getElementById('contactForm');
+    if (!contactForm) return;
+    
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        await handleContactSubmit();
+    });
+}
+
+async function handleContactSubmit() {
+    const name = document.getElementById('contactName').value.trim();
+    const email = document.getElementById('contactEmail').value.trim();
+    const message = document.getElementById('contactMessage').value.trim();
+    
+    if (!name || !email || !message) {
+        showToast('Please fill in all fields', 'error');
+        return;
+    }
+    
+    if (!isValidEmail(email)) {
+        showToast('Please enter a valid email address', 'error');
+        return;
+    }
+    
+    // Since there's no contact API endpoint, we'll simulate success
+    showToast('Thank you for your message! We will get back to you soon.', 'success');
+    document.getElementById('contactForm').reset();
+}
+
+// User Dashboard Functions
+async function loadUserDashboard() {
+    try {
+        const [stats, recentBookings, upcomingBookings] = await Promise.all([
+            DashboardAPI.getUserStats(),
+            DashboardAPI.getUserRecentBookings(),
+            DashboardAPI.getUserUpcomingBookings()
+        ]);
+        
+        displayUserStats(stats);
+        displayUserBookings(recentBookings, upcomingBookings);
+    } catch (error) {
+        console.error('Failed to load user dashboard:', error);
+        showToast('Failed to load dashboard data', 'error');
+    }
+}
+
+function displayUserStats(stats) {
+    // Update stats in the dashboard
+    console.log('User stats:', stats);
+    // You can create elements to display these stats
+}
+
+function displayUserBookings(recentBookings, upcomingBookings) {
+    // Display bookings in the dashboard
+    console.log('Recent bookings:', recentBookings);
+    console.log('Upcoming bookings:', upcomingBookings);
+    // You can create tables or cards to display these bookings
+}
+
+// Admin Dashboard Functions
+async function loadAdminDashboard() {
+    try {
+        const [stats, recentBookings, roomStats] = await Promise.all([
+            DashboardAPI.getAdminStats(),
+            DashboardAPI.getAdminRecentBookings(),
+            DashboardAPI.getAdminRoomTypeStats()
+        ]);
+        
+        displayAdminStats(stats);
+        displayAdminBookings(recentBookings);
+        displayRoomStats(roomStats);
+    } catch (error) {
+        console.error('Failed to load admin dashboard:', error);
+        showToast('Failed to load admin dashboard data', 'error');
+    }
+}
+
+function displayAdminStats(stats) {
+    // Update admin stats
+    console.log('Admin stats:', stats);
+}
+
+function displayAdminBookings(bookings) {
+    // Display admin bookings
+    console.log('Admin bookings:', bookings);
+}
+
+function displayRoomStats(roomStats) {
+    // Display room statistics
+    console.log('Room stats:', roomStats);
+}
+// Add this to your existing script.js
+
+function initializeUserDashboard() {
+    if (!AuthService.isAuthenticated()) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    loadUserDashboard();
+}
+
+async function loadUserDashboard() {
+    try {
+        const [stats, recentBookings, upcomingBookings] = await Promise.all([
+            DashboardAPI.getUserStats(),
+            DashboardAPI.getUserRecentBookings(),
+            DashboardAPI.getUserUpcomingBookings()
+        ]);
+        
+        displayUserDashboard(stats, recentBookings, upcomingBookings);
+    } catch (error) {
+        console.error('Failed to load user dashboard:', error);
+        showToast('Failed to load dashboard data', 'error');
+    }
+}
+
+function displayUserDashboard(stats, recentBookings, upcomingBookings) {
+    // Update user welcome message
+    const userData = AuthService.getUserData();
+    if (userData && userData.firstName) {
+        document.getElementById('welcomeMessage').textContent = `Hello, ${userData.firstName}!`;
+    }
+    
+    // Update stats
+    if (stats) {
+        document.getElementById('totalBookings').textContent = stats.totalBookings || 0;
+        document.getElementById('activeBookings').textContent = stats.activeBookings || 0;
+        document.getElementById('upcomingBookings').textContent = stats.upcomingCheckIns || 0;
+        document.getElementById('totalSpent').textContent = stats.totalSpent || 0;
+    }
+    
+    // Display bookings
+    displayUserBookings(recentBookings, upcomingBookings);
+}
