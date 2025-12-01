@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard - bookify Hotel</title>
-
-    <!-- Bootstrap -->
+    <title>Admin Dashboard - Bookify Hotel</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        body {
-            background: #f7f7f7;
-        }
+        body { background: #f7f7f7; }
         .sidebar {
             width: 260px;
             height: 100vh;
@@ -20,9 +17,7 @@
             position: fixed;
             color: white;
         }
-        .sidebar h2 {
-            font-size: 24px;
-        }
+        .sidebar h2 { font-size: 24px; }
         .sidebar a {
             display: block;
             padding: 12px;
@@ -32,9 +27,7 @@
             background: #34495e;
             border-radius: 6px;
         }
-        .sidebar a:hover {
-            background: #1abc9c;
-        }
+        .sidebar a:hover, .sidebar a.active { background: #1abc9c; }
         .content {
             margin-left: 280px;
             padding: 20px;
@@ -58,50 +51,458 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <h2>Admin Panel</h2>
+        <a href="#" class="active" id="btnDashboard">Dashboard</a>
         <a href="#" id="btnBookings">Bookings</a>
+        <a href="#" id="btnUsers">Users</a>
         <a href="#" id="btnRooms">Rooms</a>
+        <a href="#" id="btnRevenue">Revenue</a>
         <hr style="color: #bbb">
-        <a href="login.html">Logout</a>
+        <a href="#" id="logoutBtn">Logout</a>
     </div>
 
     <!-- Main Content -->
     <div class="content">
-
-        <h1>Admin Dashboard</h1>
-        <p class="text-muted">Overview of hotel performance</p>
-
-        <div class="row" id="statsContainer">
-            <!-- JS هيضيف الإحصائيات هنا -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Admin Dashboard</h1>
+            <div>
+                <span class="text-muted">Welcome, <strong id="adminName">Admin</strong></span>
+            </div>
         </div>
 
-        <hr class="my-4">
+        <!-- Dashboard View -->
+        <div id="dashboardView">
+            <p class="text-muted">Overview of hotel performance</p>
 
-        <h3>Recent Bookings</h3>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>User</th>
-                    <th>Room</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="recentBookingsTable">
-                <!-- JS هيضيف الصفوف هنا -->
-            </tbody>
-        </table>
+            <div class="row g-3" id="statsContainer">
+                <div class="col-md-3">
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalBookings">-</div>
+                        <div class="text-muted">Total Bookings</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalRevenue">-</div>
+                        <div class="text-muted">Total Revenue</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalRooms">-</div>
+                        <div class="text-muted">Total Rooms</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-box">
+                        <div class="stat-number" id="totalUsers">-</div>
+                        <div class="text-muted">Total Users</div>
+                    </div>
+                </div>
+            </div>
 
-        <hr class="my-4">
+            <hr class="my-4">
 
-        <h3>Top Customers</h3>
-        <ul class="list-group" id="topCustomersList">
-            <!-- JS هيضيف العملاء هنا -->
-        </ul>
+            <h3>Recent Bookings</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>User</th>
+                            <th>Room</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentBookingsTable">
+                        <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <hr class="my-4">
+
+            <h3>Top Customers</h3>
+            <ul class="list-group" id="topCustomersList">
+                <li class="list-group-item">Loading...</li>
+            </ul>
+        </div>
+
+        <!-- Bookings View -->
+        <div id="bookingsView" class="d-none">
+            <h3 class="mb-3">All Bookings</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Room</th>
+                            <th>Check-in/out</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allBookingsTable">
+                        <tr><td colspan="7" class="text-center">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Users View -->
+        <div id="usersView" class="d-none">
+            <h3 class="mb-3">All Users</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Roles</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable">
+                        <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Rooms View -->
+        <div id="roomsView" class="d-none">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>All Rooms</h3>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                    <i class="bi bi-plus-circle"></i> Add Room
+                </button>
+            </div>
+            <div class="row g-3" id="roomsContainer">
+                <div class="col-12 text-center">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Revenue View -->
+        <div id="revenueView" class="d-none">
+            <h3 class="mb-3">Revenue Analysis</h3>
+            <div class="row g-3" id="revenueContainer">
+                <div class="col-12 text-center">Loading...</div>
+            </div>
+        </div>
 
     </div>
 
-    <!<!-- jQuery -->
+    <!-- Add Room Modal -->
+    <div class="modal fade" id="addRoomModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Room</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addRoomForm">
+                        <div class="mb-3">
+                            <label class="form-label">Room Number</label>
+                            <input type="text" class="form-control" id="roomNumber" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Type</label>
+                            <input type="text" class="form-control" id="roomType" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Price Per Night</label>
+                            <input type="number" class="form-control" id="roomPrice" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Room</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api-config.js"></script>
+    <script>
+        // Check admin authentication
+        if (!Storage.isLoggedIn() || !Storage.isAdmin()) {
+            window.location.href = 'login.html';
+        }
+
+        const user = Storage.getUser();
+        if (user) {
+            document.getElementById('adminName').textContent = `${user.firstName} ${user.lastName}`;
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            Storage.logout();
+        });
+
+        // Navigation
+        const views = ['dashboard', 'bookings', 'users', 'rooms', 'revenue'];
+        
+        document.getElementById('btnDashboard').addEventListener('click', () => showView('dashboard'));
+        document.getElementById('btnBookings').addEventListener('click', () => showView('bookings'));
+        document.getElementById('btnUsers').addEventListener('click', () => showView('users'));
+        document.getElementById('btnRooms').addEventListener('click', () => showView('rooms'));
+        document.getElementById('btnRevenue').addEventListener('click', () => showView('revenue'));
+
+        function showView(view) {
+            // Hide all views
+            views.forEach(v => {
+                document.getElementById(`${v}View`).classList.add('d-none');
+            });
+            
+            // Show selected view
+            document.getElementById(`${view}View`).classList.remove('d-none');
+            
+            // Update active link
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+            document.getElementById(`btn${view.charAt(0).toUpperCase() + view.slice(1)}`).classList.add('active');
+
+            // Load data for view
+            loadViewData(view);
+        }
+
+        async function loadViewData(view) {
+            try {
+                switch(view) {
+                    case 'dashboard':
+                        await loadDashboard();
+                        break;
+                    case 'bookings':
+                        await loadBookings();
+                        break;
+                    case 'users':
+                        await loadUsers();
+                        break;
+                    case 'rooms':
+                        await loadRooms();
+                        break;
+                    case 'revenue':
+                        await loadRevenue();
+                        break;
+                }
+            } catch (error) {
+                console.error('Error loading view:', error);
+                alert('Failed to load data');
+            }
+        }
+
+        async function loadDashboard() {
+            const stats = await API.getAdminStats();
+            
+            document.getElementById('totalBookings').textContent = stats.totalBookings;
+            document.getElementById('totalRevenue').textContent = formatCurrency(stats.totalRevenue);
+            document.getElementById('totalRooms').textContent = stats.totalRooms;
+            document.getElementById('totalUsers').textContent = stats.totalUsers;
+
+            const recentBookings = await API.getAdminRecentBookings(10);
+            displayRecentBookings(recentBookings);
+
+            const topCustomers = await API.getTopCustomers(5);
+            displayTopCustomers(topCustomers);
+        }
+
+        function displayRecentBookings(bookings) {
+            const table = document.getElementById('recentBookingsTable');
+            
+            if (!bookings || bookings.length === 0) {
+                table.innerHTML = '<tr><td colspan="6" class="text-center">No bookings found</td></tr>';
+                return;
+            }
+
+            table.innerHTML = bookings.map(b => `
+                <tr>
+                    <td>${b.id}</td>
+                    <td>User #${b.userId}</td>
+                    <td>Room #${b.roomId}</td>
+                    <td>${formatDate(b.checkIn)}</td>
+                    <td>${formatCurrency(b.totalPrice)}</td>
+                    <td><span class="badge ${getStatusBadge(b.status)}">${b.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function displayTopCustomers(customers) {
+            const list = document.getElementById('topCustomersList');
+            
+            if (!customers || customers.length === 0) {
+                list.innerHTML = '<li class="list-group-item">No data available</li>';
+                return;
+            }
+
+            list.innerHTML = customers.map(c => `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${c.user.firstName} ${c.user.lastName}</strong><br>
+                        <small class="text-muted">${c.user.email}</small>
+                    </div>
+                    <div class="text-end">
+                        <div>${c.totalBookings} bookings</div>
+                        <div><strong>${formatCurrency(c.totalSpent)}</strong></div>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        async function loadBookings() {
+            const bookings = await API.getAllBookings();
+            const table = document.getElementById('allBookingsTable');
+            
+            table.innerHTML = bookings.map(b => `
+                <tr>
+                    <td>${b.id}</td>
+                    <td>${b.userId}</td>
+                    <td>${b.roomNumber}</td>
+                    <td>${formatDate(b.checkIn)} - ${formatDate(b.checkOut)}</td>
+                    <td>${formatCurrency(b.totalPrice)}</td>
+                    <td><span class="badge ${getStatusBadge(b.status)}">${b.status}</span></td>
+                    <td>
+                        ${b.status === 'Pending' ? `
+                            <button class="btn btn-sm btn-success" onclick="approveBooking(${b.id})">Approve</button>
+                            <button class="btn btn-sm btn-danger" onclick="rejectBooking(${b.id})">Reject</button>
+                        ` : ''}
+                        ${b.status === 'Confirmed' ? `
+                            <button class="btn btn-sm btn-primary" onclick="completeBooking(${b.id})">Complete</button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadUsers() {
+            const users = await API.getAllUsers();
+            const table = document.getElementById('usersTable');
+            
+            table.innerHTML = users.map(u => `
+                <tr>
+                    <td>${u.id.substring(0, 8)}...</td>
+                    <td>${u.firstName} ${u.lastName}</td>
+                    <td>${u.email}</td>
+                    <td>${u.phoneNumber || 'N/A'}</td>
+                    <td>${u.roles.join(', ')}</td>
+                    <td>${formatDate(u.createdAt)}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadRooms() {
+            const rooms = await API.getRooms();
+            const container = document.getElementById('roomsContainer');
+            
+            container.innerHTML = rooms.map(r => `
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Room ${r.roomNumber}</h5>
+                            <p class="mb-1">Type: ${r.type}</p>
+                            <p class="mb-1">Price: ${formatCurrency(r.pricePerNight)}/night</p>
+                            <span class="badge ${r.isAvailable ? 'bg-success' : 'bg-danger'}">
+                                ${r.isAvailable ? 'Available' : 'Occupied'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadRevenue() {
+            const revenue = await API.getRevenueByMonth();
+            const container = document.getElementById('revenueContainer');
+            
+            container.innerHTML = revenue.map(r => `
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>${r.monthName}</h5>
+                            <h3>${formatCurrency(r.revenue)}</h3>
+                            <p class="small text-muted">${r.bookingCount} bookings</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Booking actions
+        async function approveBooking(id) {
+            try {
+                await API.approveBooking(id);
+                alert('Booking approved');
+                loadBookings();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function rejectBooking(id) {
+            if (!confirm('Reject this booking?')) return;
+            try {
+                await API.rejectBooking(id);
+                alert('Booking rejected');
+                loadBookings();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function completeBooking(id) {
+            try {
+                await API.completeBooking(id);
+                alert('Booking completed');
+                loadBookings();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Add room
+        document.getElementById('addRoomForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const roomData = {
+                hotelId: 1,
+                roomNumber: document.getElementById('roomNumber').value,
+                type: document.getElementById('roomType').value,
+                pricePerNight: parseFloat(document.getElementById('roomPrice').value),
+                isAvailable: true
+            };
+
+            try {
+                await API.createRoom(roomData);
+                alert('Room added successfully');
+                bootstrap.Modal.getInstance(document.getElementById('addRoomModal')).hide();
+                e.target.reset();
+                loadRooms();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        function getStatusBadge(status) {
+            const badges = {
+                'Pending': 'bg-warning',
+                'Confirmed': 'bg-success',
+                'Cancelled': 'bg-danger',
+                'Completed': 'bg-secondary'
+            };
+            return badges[status] || 'bg-secondary';
+        }
+
+        // Load initial dashboard
+        loadDashboard();
+    </script>
+</body>
+</html>
+
+    <!-- jQuery -->
 <script src="js/jquery-3.7.1.min.js"></script>
 
 <!-- Bootstrap -->
@@ -122,5 +523,3 @@
 
 <!-- Main Script -->
 <script src="js/script.js"></script>
-</body>
-</html>

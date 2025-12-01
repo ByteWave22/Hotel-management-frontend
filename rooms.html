@@ -4,220 +4,80 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>bookify Hotel | Rooms</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/normalize.css"/>
     <link rel="stylesheet" href="css/all.min.css"/>
-    <link rel="stylesheet" href="css/style.css"/>
-    <link rel="stylesheet" href="css/override.css"/>
-    
-    <style>
-        .room-card {
-            transition: all 0.3s ease;
-            border: none;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            height: 100%;
-        }
-        
-        .room-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-        }
-        
-        .room-image, .room-image-placeholder {
-            height: 250px;
-            object-fit: cover;
-            width: 100%;
-        }
-        
-        .room-image-placeholder {
-            background: linear-gradient(135deg, #24426a 0%, #1a2d4d 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .price-tag {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #24426a;
-        }
-        
-        .room-features {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .room-features li {
-            padding: 5px 0;
-            color: #6c757d;
-        }
-        
-        .room-features li i {
-            color: #24426a;
-            margin-right: 8px;
-        }
-        
-        .availability-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 2;
-        }
-        
-        .filter-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-        
-        .error-message {
-            display: none;
-            text-align: center;
-            padding: 40px;
-            color: #dc3545;
-        }
-    </style>
+    <link href="css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/override.css"> 
   </head>
-  <body class="d-flex flex-column min-vh-100">
+  <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
       <div class="container">
         <a class="navbar-brand fw-bold" href="index.html">Bookify<span class="gold-logo">Hotel</span></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mainNavbar">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center" id="navLinks">
             <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
             <li class="nav-item"><a class="nav-link active" aria-current="page" href="rooms.html">Rooms</a></li>
             <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
             <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-            <li class="nav-item d-lg-none mt-2">
-              <a class="btn btn-outline-light w-100 rounded-pill" href="login.html">Login</a>
-            </li>
-            <li class="nav-item d-lg-none mt-2">
-              <a class="btn btn-accent w-100 rounded-pill" href="signup.html">Sign Up</a>
-            </li>
           </ul>
           <div class="d-none d-lg-flex ms-lg-3 gap-2" id="navButtons">
-            <!-- Will be populated by JavaScript -->
+            <a class="btn btn-outline-light rounded-pill" href="login.html">Login</a>
+            <a class="btn btn-accent rounded-pill" href="signup.html">Sign Up</a>
           </div>
+          <!-- Mobile buttons -->
+          <ul class="navbar-nav d-lg-none mt-2">
+            <li class="nav-item"><a class="btn btn-outline-light w-100 rounded-pill" href="login.html">Login</a></li>
+            <li class="nav-item mt-2"><a class="btn btn-accent w-100 rounded-pill" href="signup.html">Sign Up</a></li>
+          </ul>
         </div>
       </div>
     </nav>
 
-    <main class="flex-grow-1 py-5">
+    <section class="py-5">
       <div class="container">
-        <!-- Page Header -->
         <div class="text-center mb-5">
-          <h1 class="fw-bold display-5 mb-3">Our Rooms & Suites</h1>
-          <p class="text-muted lead">Choose the perfect stay for your needs</p>
+          <h1 class="fw-bold">Our Rooms</h1>
+          <p class="text-muted">Choose the perfect stay for your needs</p>
+        </div>
+        
+        <!-- Loading State -->
+        <div id="roomsLoading" class="text-center my-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-2 text-muted">Loading available rooms...</p>
         </div>
 
-        <!-- Filter Section -->
-        <div class="filter-section">
-          <div class="row align-items-center">
-            <div class="col-md-6">
-              <h5 class="mb-3">Find Your Perfect Room</h5>
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label for="roomTypeFilter" class="form-label">Room Type</label>
-                  <select class="form-select" id="roomTypeFilter">
-                    <option value="all">All Types</option>
-                    <option value="Standard">Standard</option>
-                    <option value="Deluxe">Deluxe</option>
-                    <option value="Suite">Suite</option>
-                    <option value="Premium Suite">Premium Suite</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label for="priceFilter" class="form-label">Max Price</label>
-                  <select class="form-select" id="priceFilter">
-                    <option value="all">Any Price</option>
-                    <option value="100">Under $100</option>
-                    <option value="200">Under $200</option>
-                    <option value="300">Under $300</option>
-                    <option value="500">Under $500</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 text-md-end">
-              <div class="d-flex justify-content-md-end align-items-center gap-3">
-                <div>
-                  <label for="sortBy" class="form-label">Sort By</label>
-                  <select class="form-select" id="sortBy">
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="name">Room Type</option>
-                  </select>
-                </div>
-                <button class="btn btn-accent mt-4" onclick="applyFilters()">
-                  <i class="bi bi-funnel me-2"></i>Apply Filters
-                </button>
-              </div>
-            </div>
-          </div>
+        <!-- Rooms Container -->
+        <div class="row g-4" id="roomsContainer">
+          <!-- Rooms will be loaded here dynamically -->
         </div>
 
-        <!-- Loading Spinner -->
-        <div id="loadingSpinner" class="loading-spinner">
-          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-            <span class="visually-hidden">Loading rooms...</span>
-          </div>
-          <p class="mt-3 text-muted">Loading available rooms...</p>
+        <!-- No Rooms Message -->
+        <div id="noRooms" class="text-center my-5 d-none">
+          <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+          <p class="text-muted mt-3">No rooms available at the moment.</p>
         </div>
 
         <!-- Error Message -->
-        <div id="errorMessage" class="error-message">
-          <i class="bi bi-exclamation-triangle display-4 text-danger mb-3"></i>
-          <h4>Failed to Load Rooms</h4>
-          <p class="text-muted">We couldn't load the room information. Please try again.</p>
-          <button class="btn btn-primary mt-3" onclick="loadRooms()">
-            <i class="bi bi-arrow-clockwise me-2"></i>Try Again
-          </button>
-        </div>
-
-        <!-- Rooms Grid -->
-        <div class="row g-4" id="roomsContainer">
-          <!-- Rooms will be loaded here by JavaScript -->
-        </div>
-
-        <!-- No Results Message (hidden by default) -->
-        <div id="noResults" class="text-center py-5" style="display: none;">
-          <i class="bi bi-search display-1 text-muted mb-3"></i>
-          <h4 class="text-muted">No Rooms Found</h4>
-          <p class="text-muted">Try adjusting your filters to see more options.</p>
-          <button class="btn btn-outline-primary" onclick="clearFilters()">
-            Clear All Filters
-          </button>
+        <div id="roomsError" class="alert alert-danger d-none" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <span id="errorMessage">Failed to load rooms. Please try again.</span>
         </div>
       </div>
-    </main>
+    </section>
 
     <footer class="footer text-white py-4 mt-auto">
       <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-        <div>© <span id="year">2024</span> Bookify Hotel</div>
+        <div>© <span id="year"></span> Bookify Hotel</div>
         <div class="d-flex gap-3 fs-5">
           <a class="text-white-50 hover-white" href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
           <a class="text-white-50 hover-white" href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
@@ -225,394 +85,35 @@
         </div>
       </div>
     </footer>
-<script>
-  // Global variables
-  let allRooms = [];
-  let filteredRooms = [];
 
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Rooms page loaded');
-    initializeRoomsPage();
-  });
-async function initializeRoomsPage() {
-  try {
-    console.log('🚀 Initializing rooms page...');
-    
-    // Set current year
-    document.getElementById('year').textContent = new Date().getFullYear();
-    
-    // Update navigation with proper authentication check
-    updateNavigation();
-    
-    // Check if API configuration is loaded
-    if (typeof AuthService === 'undefined') {
-      console.error('❌ AuthService is not defined - API config not loaded');
-      showError('Configuration error. Please refresh the page.');
-      return;
-    }
-    
-    // Check authentication
-    if (!AuthService.isAuthenticated()) {
-      console.log('🔐 User not authenticated');
-      showLoginPrompt();
-      return;
-    }
-    
-    console.log('✅ User authenticated, loading rooms from API...');
-    
-    // Load rooms from API
-    await loadRooms();
-    
-  } catch (error) {
-    console.error('Page initialization failed:', error);
-    showError('Failed to initialize page: ' + error.message);
-  }
-}
-
-  function updateNavigation() {
-  const navButtons = document.getElementById('navButtons');
-  if (!navButtons) return;
-
-  // Check if user is authenticated
-  if (typeof AuthService !== 'undefined' && AuthService.isAuthenticated()) {
-    const userData = AuthService.getUserData();
-    const userName = userData ? (userData.firstName || userData.email || 'User') : 'User';
-    
-    navButtons.innerHTML = `
-      <div class="dropdown">
-        <button class="btn btn-outline-light rounded-pill dropdown-toggle" type="button" data-bs-toggle="dropdown">
-          <i class="bi bi-person-circle me-1"></i>${userName}
-        </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="user-dashboard.html">My Dashboard</a></li>
-          ${AuthService.isAdmin ? '<li><a class="dropdown-item" href="admin-dashboard.html">Admin Panel</a></li>' : ''}
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#" onclick="handleLogout(event)">Logout</a></li>
-        </ul>
+    <!-- CHAT WIDGET -->
+    <div id="chatbot-btn" class="chat-btn" aria-label="Open chat" title="Open chat">💬</div>
+    <div id="chatbot-window" class="chatbot-widget" dir="rtl" role="dialog" aria-labelledby="chat-title" aria-hidden="true">
+      <div class="chat-top">
+        <div id="chat-title" class="chat-title">Hotel Chat Bot 🤖</div>
+        <button id="chat-close" class="chat-close-btn" aria-label="Close chat">×</button>
       </div>
-    `;
-  } else {
-    // Show login/signup buttons
-    navButtons.innerHTML = `
-      <a class="btn btn-outline-light rounded-pill" href="login.html">Login</a>
-      <a class="btn btn-accent rounded-pill" href="signup.html">Sign Up</a>
-    `;
-  }
-}
-async function loadRooms() {
-  try {
-    showLoading(true);
-    hideError();
-    
-    console.log('🔍 Starting to load rooms from API...');
-    
-    // Check if RoomsAPI is available
-    if (typeof RoomsAPI === 'undefined') {
-      throw new Error('RoomsAPI not loaded. Please check the script files.');
-    }
-    
-    // Fetch rooms from real API
-    console.log('🔄 Calling RoomsAPI.getAllRooms()...');
-    allRooms = await RoomsAPI.getAllRooms();
-    
-    console.log('✅ Rooms loaded successfully from API:', allRooms);
-    
-    if (!allRooms || allRooms.length === 0) {
-      console.warn('⚠️ No rooms returned from API');
-      showToast('No rooms available at the moment.', 'info');
-    }
-    
-    // Display rooms
-    displayRooms(allRooms);
-    filteredRooms = allRooms;
-    
-  } catch (error) {
-    console.error('❌ Failed to load rooms from API:', error);
-    
-    // Show appropriate error message
-    if (error.message.includes('401') || error.message.includes('Authentication')) {
-      showLoginPrompt();
-    } else if (error.message.includes('Network') || error.message.includes('Failed to fetch')) {
-      showError('Network error. Please check your connection and try again.');
-    } else {
-      showError('Failed to load rooms: ' + error.message);
-    }
-  } finally {
-    showLoading(false);
-  }
-}
-  // Mock data for testing
-  function getMockRooms() {
-    return [
-      {
-        id: 1,
-        hotelId: 1,
-        roomNumber: "101",
-        type: "Standard",
-        pricePerNight: 150,
-        isAvailable: true,
-        hotelName: "COZY"
-      },
-      {
-        id: 2,
-        hotelId: 1,
-        roomNumber: "102",
-        type: "Standard",
-        pricePerNight: 150,
-        isAvailable: true,
-        hotelName: "COZY"
-      },
-      {
-        id: 3,
-        hotelId: 1,
-        roomNumber: "201",
-        type: "Deluxe",
-        pricePerNight: 250,
-        isAvailable: true,
-        hotelName: "COZY"
-      },
-      {
-        id: 4,
-        hotelId: 1,
-        roomNumber: "301",
-        type: "Suite",
-        pricePerNight: 400,
-        isAvailable: true,
-        hotelName: "COZY"
-      }
-    ];
-  }
-
-  function displayRooms(rooms) {
-    const container = document.getElementById('roomsContainer');
-    const noResults = document.getElementById('noResults');
-    
-    if (!rooms || rooms.length === 0) {
-      container.innerHTML = '';
-      noResults.style.display = 'block';
-      return;
-    }
-    
-    noResults.style.display = 'none';
-    
-    container.innerHTML = rooms.map(room => `
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card room-card h-100">
-          <div class="position-relative">
-            <div class="room-image-placeholder">
-              ${room.type} Room
-              <br>
-              <small>Room ${room.roomNumber}</small>
-            </div>
-            
-            <!-- Availability Badge -->
-            <span class="availability-badge badge ${room.isAvailable ? 'bg-success' : 'bg-danger'}">
-              ${room.isAvailable ? 'Available' : 'Booked'}
-            </span>
-            
-            <!-- Room Type Badge -->
-            <span class="availability-badge badge bg-primary" style="top: 50px;">
-              ${room.type}
-            </span>
-          </div>
-          
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">${room.type} Room</h5>
-            <p class="card-text text-muted mb-3">
-              <i class="bi bi-door-closed me-1"></i>Room ${room.roomNumber}
-              ${room.hotelName ? `• ${room.hotelName}` : ''}
-            </p>
-            
-            <!-- Room Features -->
-            <ul class="room-features mb-3">
-              <li><i class="bi bi-wifi"></i>Free High-Speed Wi-Fi</li>
-              <li><i class="bi bi-tv"></i>Smart TV</li>
-              <li><i class="bi bi-thermometer-snow"></i>Air Conditioning</li>
-              <li><i class="bi bi-cup-hot"></i>Tea/Coffee Maker</li>
-            </ul>
-            
-            <div class="mt-auto">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                  <div class="price-tag">$${room.pricePerNight}</div>
-                  <small class="text-muted">per night</small>
-                </div>
-                <div class="text-end">
-                  <small class="text-muted d-block">Room ID: ${room.id}</small>
-                  <small class="text-muted">${getRoomSize(room.type)}</small>
-                </div>
-              </div>
-              
-              <div class="d-grid">
-                <button class="btn btn-accent" 
-                        onclick="bookRoom(${room.id})" 
-                        ${!room.isAvailable ? 'disabled' : ''}>
-                  <i class="bi bi-calendar-plus me-2"></i>
-                  ${room.isAvailable ? 'Book Now' : 'Not Available'}
-                </button>
-              </div>
-            </div>
-          </div>
+      <div class="chat-body" id="chat-body" aria-live="polite">
+        <div class="bubble bot" id="chat-bubble">
+          أهلاً! اختار رقم من القائمة:
+          <span class="list-item">1️⃣ كل الغرف</span>
+          <span class="list-item">2️⃣ الغرف المتاحة</span>
+          <span class="list-item">3️⃣ آخر الحجوزات</span>
+          <span class="list-item">4️⃣ إحصائيات نوع الغرفة</span>
         </div>
       </div>
-    `).join('');
-  }
+      <div class="chat-bottom" id="chat-bottom">
+        <button class="opt-btn" data-val="1" aria-label="كل الغرف">1️⃣ كل الغرف</button>
+        <button class="opt-btn" data-val="2" aria-label="الغرف المتاحة">2️⃣ الغرف المتاحة</button>
+        <button class="opt-btn" data-val="3" aria-label="آخر الحجوزات">3️⃣ آخر الحجوزات</button>
+        <button class="opt-btn" data-val="4" aria-label="إحصائيات نوع الغرفة">4️⃣ إحصائيات نوع الغرفة</button>
+      </div>
+    </div>
 
-  function getRoomSize(roomType) {
-    const sizeMap = {
-      'Standard': '250 sq ft',
-      'Deluxe': '350 sq ft',
-      'Suite': '500 sq ft',
-      'Premium Suite': '750 sq ft'
-    };
-    
-    return sizeMap[roomType] || 'Standard size';
-  }
-
-  function applyFilters() {
-    const typeFilter = document.getElementById('roomTypeFilter').value;
-    const priceFilter = document.getElementById('priceFilter').value;
-    const sortBy = document.getElementById('sortBy').value;
-    
-    let filtered = [...allRooms];
-    
-    // Apply type filter
-    if (typeFilter !== 'all') {
-      filtered = filtered.filter(room => room.type === typeFilter);
-    }
-    
-    // Apply price filter
-    if (priceFilter !== 'all') {
-      const maxPrice = parseInt(priceFilter);
-      filtered = filtered.filter(room => room.pricePerNight <= maxPrice);
-    }
-    
-    // Apply sorting
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'price-low':
-          return a.pricePerNight - b.pricePerNight;
-        case 'price-high':
-          return b.pricePerNight - a.pricePerNight;
-        case 'name':
-          return a.type.localeCompare(b.type);
-        default:
-          return 0;
-      }
-    });
-    
-    filteredRooms = filtered;
-    displayRooms(filtered);
-  }
-
-  function clearFilters() {
-    document.getElementById('roomTypeFilter').value = 'all';
-    document.getElementById('priceFilter').value = 'all';
-    document.getElementById('sortBy').value = 'price-low';
-    
-    filteredRooms = allRooms;
-    displayRooms(allRooms);
-  }
-function bookRoom(roomId) {
-  console.log('🎯 Booking room:', roomId);
-  
-  // Check authentication
-  if (typeof AuthService === 'undefined' || !AuthService.isAuthenticated()) {
-    showLoginPrompt();
-    return;
-  }
-  
-  // Find the room to check availability
-  const room = allRooms.find(r => r.id === roomId);
-  if (!room) {
-    showToast('Room not found.', 'error');
-    return;
-  }
-  
-  if (!room.isAvailable) {
-    showToast('This room is not available for booking.', 'warning');
-    return;
-  }
-  
-  // Redirect to booking page with room ID
-  console.log('➡️ Redirecting to booking page for room:', roomId);
-  window.location.href = `booking.html?roomId=${roomId}`;
-}
-function showLoginPrompt() {
-  console.log('🔐 Showing login prompt');
-  if (confirm('You need to login to book a room. Would you like to login now?')) {
-    window.location.href = 'login.html';
-  }
-}
-
-function handleLogout(e) {
-  e.preventDefault();
-  console.log('🚪 Logging out...');
-  
-  if (typeof AuthAPI !== 'undefined') {
-    AuthAPI.logout();
-  } else {
-    // Fallback logout
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
-    window.location.href = 'index.html';
-  }
-}
-
-function showToast(message, type = 'info') {
-  // Simple console log for now - you can add proper toast notifications later
-  console.log(`📢 ${type.toUpperCase()}: ${message}`);
-  
-  // Simple alert for important messages
-  if (type === 'error') {
-    alert('Error: ' + message);
-  }
-}
-  function showLoading(show) {
-    const spinner = document.getElementById('loadingSpinner');
-    const container = document.getElementById('roomsContainer');
-    
-    if (show) {
-      spinner.style.display = 'block';
-      container.style.display = 'none';
-    } else {
-      spinner.style.display = 'none';
-      container.style.display = 'flex';
-    }
-  }
-
-  function showError(message) {
-    const errorDiv = document.getElementById('errorMessage');
-    const errorText = errorDiv.querySelector('p');
-    errorText.textContent = message;
-    errorDiv.style.display = 'block';
-    document.getElementById('roomsContainer').style.display = 'none';
-    document.getElementById('loadingSpinner').style.display = 'none';
-  }
-
-  function hideError() {
-    document.getElementById('errorMessage').style.display = 'none';
-  }
-
-  // Add event listeners for filters
-  document.getElementById('roomTypeFilter').addEventListener('change', applyFilters);
-  document.getElementById('priceFilter').addEventListener('change', applyFilters);
-  document.getElementById('sortBy').addEventListener('change', applyFilters);
-</script>
-<!-- Debug script to check if files are loading -->
-<script>
-  console.log('🔍 Checking if API files are loaded...');
-  console.log('AuthService defined:', typeof AuthService !== 'undefined');
-  console.log('AuthAPI defined:', typeof AuthAPI !== 'undefined');
-  console.log('RoomsAPI defined:', typeof RoomsAPI !== 'undefined');
-  console.log('apiRequest defined:', typeof apiRequest !== 'undefined');
-</script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/rooms.js"></script>
   </body>
 </html>
-<script src="js/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- API Configuration - MUST BE LOADED FIRST -->
-<script src="js/api-config.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/rooms.js"></script>

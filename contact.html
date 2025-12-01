@@ -3,24 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>bookify Hotel | Contact</title>
+    <title>Bookify Hotel | Contact</title>
     <link href="css/bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    <!--render all element normaliy-->
     <link rel="stylesheet" href="css/normalize.css"/>
-    <!--font Awesome Library-->
     <link rel="stylesheet" href="css/all.min.css"/>
     <link href="css/style.css" rel="stylesheet" />
-
     <link rel="stylesheet" href="css/override.css"> 
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
       <div class="container">
-        <a class="navbar-brand fw-bold" href="index.html">Bookify<span class="gold-logo">Hotel</a>
+        <a class="navbar-brand fw-bold" href="index.html">Bookify<span class="gold-logo">Hotel</span></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -30,14 +27,14 @@
             <li class="nav-item"><a class="nav-link" href="rooms.html">Rooms</a></li>
             <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
             <li class="nav-item"><a class="nav-link active" aria-current="page" href="contact.html">Contact</a></li>
-            <li class="nav-item d-lg-none mt-2">
+            <li class="nav-item d-lg-none mt-2" id="mobileLoginBtn">
               <a class="btn btn-outline-light w-100 rounded-pill" href="login.html">Login</a>
             </li>
-            <li class="nav-item d-lg-none mt-2">
+            <li class="nav-item d-lg-none mt-2" id="mobileSignupBtn">
               <a class="btn btn-accent w-100 rounded-pill" href="signup.html">Sign Up</a>
             </li>
           </ul>
-          <div class="d-none d-lg-flex ms-lg-3 gap-2">
+          <div class="d-none d-lg-flex ms-lg-3 gap-2" id="navButtons">
             <a class="btn btn-outline-light rounded-pill" href="login.html">Login</a>
             <a class="btn btn-accent rounded-pill" href="signup.html">Sign Up</a>
           </div>
@@ -88,56 +85,58 @@
       </div>
     </footer>
 
-    <!-- CHAT WIDGET (tile-only + floating button) -->
-<!-- Floating open button -->
-<div id="chatbot-btn" class="chat-btn" aria-label="Open chat" title="Open chat">💬</div>
-
-<!-- Chat window -->
-<div id="chatbot-window" class="chatbot-widget" dir="rtl" role="dialog" aria-labelledby="chat-title" aria-hidden="true">
-  <div class="chat-top">
-    <div id="chat-title" class="chat-title">Hotel Chat Bot 🤖</div>
-    <button id="chat-close" class="chat-close-btn" aria-label="Close chat">×</button>
-  </div>
-
-  <div class="chat-body" id="chat-body" aria-live="polite">
-    <div class="bubble bot" id="chat-bubble">
-      أهلاً! اختار رقم من القائمة:
-      <span class="list-item">1️⃣ كل الغرف</span>
-      <span class="list-item">2️⃣ الغرف المتاحة</span>
-      <span class="list-item">3️⃣ آخر الحجوزات</span>
-      <span class="list-item">4️⃣ إحصائيات نوع الغرفة</span>
+    <!-- Chat Widget -->
+    <div id="chatbot-btn" class="chat-btn" aria-label="Open chat" title="Open chat">💬</div>
+    <div id="chatbot-window" class="chatbot-widget" dir="rtl" role="dialog" aria-labelledby="chat-title" aria-hidden="true">
+      <div class="chat-top">
+        <div id="chat-title" class="chat-title">Hotel Chat Bot 🤖</div>
+        <button id="chat-close" class="chat-close-btn" aria-label="Close chat">×</button>
+      </div>
+      <div class="chat-body" id="chat-body" aria-live="polite">
+        <div class="bubble bot" id="chat-bubble">
+          أهلاً! اختار رقم من القائمة:
+          <span class="list-item">1️⃣ كل الغرف</span>
+          <span class="list-item">2️⃣ الغرف المتاحة</span>
+          <span class="list-item">3️⃣ آخر الحجوزات</span>
+          <span class="list-item">4️⃣ إحصائيات نوع الغرفة</span>
+        </div>
+      </div>
+      <div class="chat-bottom" id="chat-bottom">
+        <button class="opt-btn" data-val="1" aria-label="كل الغرف">1️⃣ كل الغرف</button>
+        <button class="opt-btn" data-val="2" aria-label="الغرف المتاحة">2️⃣ الغرف المتاحة</button>
+        <button class="opt-btn" data-val="3" aria-label="آخر الحجوزات">3️⃣ آخر الحجوزات</button>
+        <button class="opt-btn" data-val="4" aria-label="إحصائيات نوع الغرفة">4️⃣ إحصائيات نوع الغرفة</button>
+      </div>
     </div>
-  </div>
 
-  <div class="chat-bottom" id="chat-bottom">
-    <button class="opt-btn" data-val="1" aria-label="كل الغرف">1️⃣ كل الغرف</button>
-    <button class="opt-btn" data-val="2" aria-label="الغرف المتاحة">2️⃣ الغرف المتاحة</button>
-    <button class="opt-btn" data-val="3" aria-label="آخر الحجوزات">3️⃣ آخر الحجوزات</button>
-    <button class="opt-btn" data-val="4" aria-label="إحصائيات نوع الغرفة">4️⃣ إحصائيات نوع الغرفة</button>
-  </div>
-</div>
-<!-- end chat widget -->
-
-<!-- jQuery -->
-<script src="js/jquery-3.7.1.min.js"></script>
-
-<!-- Bootstrap -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Stripe -->
-<script src="https://js.stripe.com/v3/"></script>
-
-<!-- API Integration -->
-<script src="js/api-config.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/rooms.js"></script>
-<script src="js/bookings.js"></script>
-<script src="js/payment.js"></script>
-<script src="js/chat.js"></script>
-<script src="js/dashboard.js"></script>
-<script src="js/admin.js"></script>
-
-<!-- Main Script -->
-<script src="js/script.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api-config.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+      // Contact form handling
+      document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const message = document.getElementById('contactMessage').value.trim();
+        
+        if (!name || !email || !message) {
+          showError('contactAlert', 'Please fill in all fields');
+          return;
+        }
+        
+        if (!isValidEmail(email)) {
+          showError('contactAlert', 'Please enter a valid email address');
+          return;
+        }
+        
+        // Simulate successful submission
+        showSuccess('contactAlert', 'Thank you for your message! We will get back to you soon.');
+        this.reset();
+      });
+    </script>
   </body>
 </html>

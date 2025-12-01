@@ -6,28 +6,24 @@
     <title>bookify Hotel | Booking</title>
     <link href="css/bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    <!--render all element normaliy-->
-    <link rel="stylesheet" href="css/normalize.css"/>
-    <!--font Awesome Library-->
-    <link rel="stylesheet" href="css/all.min.css"/>
     <link href="css/style.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/override.css">
-
     <style>
-      /* small local styles for payment block */
-      #payment-block { display: none; max-width: 720px; margin: 18px auto; }
-      #card-element { padding: 12px; border-radius: 8px; background:#fff; border:1px solid #dee2e6; }
-      #card-errors { min-height: 20px; }
+      input[type="date"]:disabled {
+        background-color: #f0f0f0;
+        cursor: not-allowed;
+      }
+      .border-primary {
+        border-color: #0d6efd !important;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
     </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
       <div class="container">
-        <a class="navbar-brand fw-bold" href="index.html">Bookify<span class="gold-logo">Hotel</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand fw-bold" href="index.html">Bookify<span class="gold-logo">Hotel</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mainNavbar">
@@ -36,16 +32,9 @@
             <li class="nav-item"><a class="nav-link" href="rooms.html">Rooms</a></li>
             <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
             <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-            <li class="nav-item d-lg-none mt-2">
-              <a class="btn btn-outline-light w-100 rounded-pill" href="login.html">Login</a>
-            </li>
-            <li class="nav-item d-lg-none mt-2">
-              <a class="btn btn-accent w-100 rounded-pill" href="signup.html">Sign Up</a>
-            </li>
           </ul>
-          <div class="d-none d-lg-flex ms-lg-3 gap-2">
-            <a class="btn btn-outline-light rounded-pill" href="login.html">Login</a>
-            <a class="btn btn-accent rounded-pill" href="signup.html">Sign Up</a>
+          <div id="navButtons" class="d-none d-lg-flex ms-lg-3 gap-2">
+            <!-- Will be updated by JavaScript -->
           </div>
         </div>
       </div>
@@ -58,88 +47,55 @@
             <div class="card shadow-sm reveal booking-card">
               <div class="card-body p-4 p-md-5">
                 <h1 class="h3 fw-bold mb-4 text-center">Book Your Stay</h1>
-                <!-- room info placeholder -->
-                <div class="room-info" id="roomInfo" aria-live="polite" role="status" style="display:block;">
-                   <p><strong>Room:</strong> <span id="roomName">Deluxe Sea View</span></p>
-                   <p><strong>Price:</strong> <span id="roomPrice" data-amount="120">120 USD</span></p>
-                 </div>
+                
+                <div id="bookingAlert"></div>
+
+                <!-- Room Info -->
+                <div class="room-info mb-4 p-3 border rounded bg-white" id="roomInfo">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <p class="mb-1"><strong>Room:</strong> <span id="roomType">-</span></p>
+                      <p class="mb-0"><strong>Price:</strong> <span id="roomPrice">-</span>/night</p>
+                    </div>
+                    <span class="badge bg-success" id="roomStatus">Available</span>
+                  </div>
+                </div>
 
                 <form id="bookingForm" novalidate>
                   <div class="row g-3">
                     <div class="col-md-6">
-                      <label for="fullName" class="form-label">Full Name</label>
-                      <input type="text" class="form-control" id="fullName" placeholder="John Doe" required>
-                    </div>
-                    <div class="col-md-6">
-                      <label for="email" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="email" placeholder="john@example.com" required>
-                    </div>
-                    <div class="col-md-6">
-                      <label for="phone" class="form-label">Phone</label>
-                      <input type="tel" class="form-control" id="phone" placeholder="+1 555 123 4567" required>
-                    </div>
-                    <div class="col-md-3">
-                      <label for="checkin" class="form-label">Check-in</label>
+                      <label for="checkin" class="form-label">
+                        <i class="bi bi-calendar-check"></i> Check-in Date
+                      </label>
                       <input type="date" class="form-control" id="checkin" required>
-                    </div>
-                    <div class="col-md-3">
-                      <label for="checkout" class="form-label">Check-out</label>
-                      <input type="date" class="form-control" id="checkout" required>
+                      <div class="form-text">Select your arrival date</div>
                     </div>
                     <div class="col-md-6">
-                      <label for="guests" class="form-label">Guests</label>
-                      <select id="guests" class="form-select" required>
-                        <option value="" selected disabled>Select guests</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5+</option>
-                      </select>
+                      <label for="checkout" class="form-label">
+                        <i class="bi bi-calendar-x"></i> Check-out Date
+                      </label>
+                      <input type="date" class="form-control" id="checkout" required>
+                      <div class="form-text">Must be after check-in date</div>
                     </div>
-                  </div>
-                  <div class="d-grid mt-4">
-                    <!-- This button shows payment block (client-side only) -->
-                    <button type="button" id="showPayment" class="btn btn-accent btn-lg">Book & Pay</button>
-                  </div>
-                </form>
 
-                <!-- ===== Payment block (Stripe Elements) ===== -->
-                <div id="payment-block" class="card mt-4 p-3">
-                  <div class="card-body">
-                    <h5 class="mb-3">Payment details</h5>
-
-                    <div class="row g-3">
-                      <div class="col-md-6">
-                        <label class="form-label">Name on card</label>
-                        <input id="cardholder-name" class="form-control" placeholder="John Doe" />
-                      </div>
-                      <div class="col-md-6">
-                        <label class="form-label">Email</label>
-                        <input id="cardholder-email" class="form-control" placeholder="john@example.com" />
-                      </div>
-
-                      <div class="col-12">
-                        <label class="form-label">Card details</label>
-                        <div id="card-element"></div>
-                        <div id="card-errors" class="text-danger small mt-2" role="alert" aria-live="polite"></div>
-                      </div>
-
-                      <div class="col-12">
-                        <div class="d-flex gap-2">
-                          <button id="payBtn" class="btn btn-primary">Pay Now</button>
-                          <button id="cancelPayment" class="btn btn-outline-secondary">Cancel</button>
+                    <div class="col-12">
+                      <div class="alert alert-info">
+                        <strong>Booking Summary:</strong>
+                        <div id="bookingSummary" class="mt-2">
+                          <div>Number of nights: <strong id="numNights">-</strong></div>
+                          <div>Total price: <strong id="totalPrice">-</strong></div>
                         </div>
                       </div>
-
-                      <div class="col-12 small text-muted mt-2">
-                        <span class="me-1">🔒</span> Secure payment powered by Stripe
-                      </div>
                     </div>
                   </div>
-                </div>
-                <!-- ===== end payment block ===== -->
 
+                  <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-accent btn-lg" id="bookNowBtn">
+                      <span class="btn-text">Create Booking & Proceed to Payment</span>
+                      <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -148,18 +104,24 @@
     </section>
 
     <!-- Success Modal -->
-    <div class="modal fade" id="bookingSuccessModal" tabindex="-1" aria-labelledby="bookingSuccessLabel" aria-hidden="true">
+    <div class="modal fade" id="bookingSuccessModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="bookingSuccessLabel">Success</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title">Booking Successful!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            Booking submitted successfully!
+            <div class="text-center">
+              <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
+              <h4 class="mt-3">Your booking has been confirmed!</h4>
+              <p class="text-muted">Booking ID: <strong id="bookingId">-</strong></p>
+              <p>Check your email for confirmation details.</p>
+            </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <a href="user-dashboard.html" class="btn btn-primary">View My Bookings</a>
           </div>
         </div>
       </div>
@@ -168,228 +130,262 @@
     <footer class="footer text-white py-4 mt-auto">
       <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
         <div>© <span id="year"></span> Bookify Hotel</div>
-        <div class="d-flex gap-3 fs-5">
-          <a class="text-white-50 hover-white" href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
-          <a class="text-white-50 hover-white" href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-          <a class="text-white-50 hover-white" href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-        </div>
       </div>
     </footer>
 
-    <!-- CHAT WIDGET (tile-only + floating button) -->
-<!-- Floating open button -->
-<div id="chatbot-btn" class="chat-btn" aria-label="Open chat" title="Open chat">💬</div>
-
-<!-- Chat window -->
-<div id="chatbot-window" class="chatbot-widget" dir="rtl" role="dialog" aria-labelledby="chat-title" aria-hidden="true">
-  <div class="chat-top">
-    <div id="chat-title" class="chat-title">Hotel Chat Bot 🤖</div>
-    <button id="chat-close" class="chat-close-btn" aria-label="Close chat">×</button>
-  </div>
-
-  <div class="chat-body" id="chat-body" aria-live="polite">
-    <div class="bubble bot" id="chat-bubble">
-      أهلاً! اختار رقم من القائمة:
-      <span class="list-item">1️⃣ كل الغرف</span>
-      <span class="list-item">2️⃣ الغرف المتاحة</span>
-      <span class="list-item">3️⃣ آخر الحجوزات</span>
-      <span class="list-item">4️⃣ إحصائيات نوع الغرفة</span>
-    </div>
-  </div>
-
-  <div class="chat-bottom" id="chat-bottom">
-    <button class="opt-btn" data-val="1" aria-label="كل الغرف">1️⃣ كل الغرف</button>
-    <button class="opt-btn" data-val="2" aria-label="الغرف المتاحة">2️⃣ الغرف المتاحة</button>
-    <button class="opt-btn" data-val="3" aria-label="آخر الحجوزات">3️⃣ آخر الحجوزات</button>
-    <button class="opt-btn" data-val="4" aria-label="إحصائيات نوع الغرفة">4️⃣ إحصائيات نوع الغرفة</button>
-  </div>
-</div>
-<!-- end chat widget -->
-
     <script src="js/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Stripe.js -->
-    <script src="https://js.stripe.com/v3/"></script>
-
+    <script src="js/api-config.js"></script>
+    <script src="js/script.js"></script>
     <script>
-      // display year
       document.getElementById('year').textContent = new Date().getFullYear();
 
-      // ---------- Configuration: replace with your keys / backend ----------
-      const STRIPE_PUBLISHABLE_KEY = "pk_test_REPLACE_ME"; // <-- put your publishable key
-      const BACKEND_CHARGE_URL = ""; // e.g. "https://yourdomain.com/charge" - leave empty for demo (token printed to console)
-      // -------------------------------------------------------------------
+      // Check if user is logged in
+      if (!Storage.isLoggedIn()) {
+        alert('Please login to book a room');
+        window.location.href = 'login.html';
+      }
 
-      // UI elements
-      const showPaymentBtn = document.getElementById('showPayment');
-      const paymentBlock = document.getElementById('payment-block');
-      const cancelPayment = document.getElementById('cancelPayment');
+      // Update navigation
+      updateNavigation();
 
-      showPaymentBtn.addEventListener('click', function () {
-        // basic validation before showing payment UI
-        const fullName = document.getElementById('fullName').value.trim();
-        const email = document.getElementById('email').value.trim();
+      // Get room ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomId = urlParams.get('roomId');
+
+      if (!roomId) {
+        showError('bookingAlert', 'No room selected. Please select a room first.');
+        setTimeout(() => window.location.href = 'rooms.html', 2000);
+      }
+
+      let selectedRoom = null;
+
+      // Load room details
+      async function loadRoomDetails() {
+        try {
+          // Get room from session storage or API
+          const saved = sessionStorage.getItem('selectedRoom');
+          if (saved) {
+            selectedRoom = JSON.parse(saved);
+            document.getElementById('roomType').textContent = selectedRoom.type;
+            document.getElementById('roomPrice').textContent = '$' + selectedRoom.price;
+          } else {
+            // Fetch from API
+            const rooms = await API.getRooms();
+            selectedRoom = rooms.find(r => r.id == roomId);
+            if (selectedRoom) {
+              document.getElementById('roomType').textContent = selectedRoom.type;
+              document.getElementById('roomPrice').textContent = '$' + selectedRoom.pricePerNight;
+              selectedRoom.price = selectedRoom.pricePerNight; // Normalize property name
+            }
+          }
+        } catch (error) {
+          showError('bookingAlert', 'Failed to load room details');
+        }
+      }
+
+      // Set minimum dates
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayStr = today.toISOString().split('T')[0];
+      
+      const checkinInput = document.getElementById('checkin');
+      const checkoutInput = document.getElementById('checkout');
+      
+      checkinInput.min = todayStr;
+      checkoutInput.min = todayStr;
+
+      // Update checkout min date when checkin changes
+      checkinInput.addEventListener('change', function() {
+        const checkinDate = this.value;
+        if (checkinDate) {
+          // Set checkout minimum to day after checkin
+          const nextDay = new Date(checkinDate);
+          nextDay.setDate(nextDay.getDate() + 1);
+          checkoutInput.min = nextDay.toISOString().split('T')[0];
+          
+          // Clear checkout if it's before new minimum
+          if (checkoutInput.value && checkoutInput.value <= checkinDate) {
+            checkoutInput.value = '';
+            checkoutInput.classList.add('is-invalid');
+            showError('bookingAlert', 'Please select a new check-out date (must be after check-in)');
+          } else {
+            checkoutInput.classList.remove('is-invalid');
+          }
+          
+          // Enable and highlight checkout field
+          checkoutInput.disabled = false;
+          checkoutInput.classList.add('border-primary');
+          
+          // Recalculate if both dates are set
+          calculateTotal();
+        }
+      });
+
+      // Recalculate when checkout changes
+      checkoutInput.addEventListener('change', function() {
+        this.classList.remove('is-invalid', 'border-primary');
+        calculateTotal();
+      });
+
+      // Disable checkout initially
+      checkoutInput.disabled = true;
+      checkoutInput.placeholder = 'Select check-in first';
+
+      function calculateTotal() {
         const checkin = document.getElementById('checkin').value;
         const checkout = document.getElementById('checkout').value;
-        const guests = document.getElementById('guests').value;
 
-        if (!fullName || !email || !checkin || !checkout || !guests) {
-          alert('Please fill required booking fields first.');
-          return;
+        if (checkin && checkout && selectedRoom) {
+          const checkInDate = new Date(checkin);
+          const checkOutDate = new Date(checkout);
+          const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+          if (nights > 0) {
+            const total = nights * (selectedRoom.price || selectedRoom.pricePerNight);
+            document.getElementById('numNights').textContent = nights;
+            document.getElementById('totalPrice').textContent = '$' + total;
+          } else {
+            document.getElementById('numNights').textContent = '-';
+            document.getElementById('totalPrice').textContent = '-';
+          }
         }
-
-        // prefill payment name/email
-        document.getElementById('cardholder-name').value = fullName;
-        document.getElementById('cardholder-email').value = email;
-
-        paymentBlock.style.display = 'block';
-        // scroll to payment block
-        paymentBlock.scrollIntoView({behavior: 'smooth', block: 'center'});
-      });
-
-      cancelPayment.addEventListener('click', function (e) {
-        e.preventDefault();
-        paymentBlock.style.display = 'none';
-      });
-
-      // ----------------- Stripe Elements initialization -----------------
-      if (!STRIPE_PUBLISHABLE_KEY || STRIPE_PUBLISHABLE_KEY.includes('REPLACE_ME')) {
-        console.warn('Stripe publishable key missing. Set STRIPE_PUBLISHABLE_KEY in the script.');
       }
-      const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
-      const elements = stripe.elements();
 
-      const style = {
-        base: {
-          fontSize: '16px',
-          color: '#111827',
-          '::placeholder': { color: '#9ca3af' },
-          fontFamily: 'Open Sans, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial'
-        },
-        invalid: { color: '#dc2626' }
-      };
-
-      const card = elements.create('card', { style, hidePostalCode: true });
-      card.mount('#card-element');
-
-      const cardErrors = document.getElementById('card-errors');
-      card.on('change', event => {
-        cardErrors.textContent = event.error ? event.error.message : '';
-      });
-
-      // Pay flow (frontend-only or send token to backend if BACKEND_CHARGE_URL provided)
-      const payBtn = document.getElementById('payBtn');
-      payBtn.addEventListener('click', async function (e) {
+      // Submit booking
+      document.getElementById('bookingForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        payBtn.disabled = true;
-        payBtn.textContent = 'Processing...';
 
-        // Gather booking + payer info
-        const booking = {
-          fullName: document.getElementById('fullName').value.trim(),
-          email: document.getElementById('email').value.trim(),
-          phone: document.getElementById('phone').value.trim(),
-          checkin: document.getElementById('checkin').value,
-          checkout: document.getElementById('checkout').value,
-          guests: document.getElementById('guests').value,
-          roomName: document.getElementById('roomName').textContent.trim(),
-          price: document.getElementById('roomPrice').getAttribute('data-amount') || '0'
-        };
+        const checkin = document.getElementById('checkin').value;
+        const checkout = document.getElementById('checkout').value;
 
-        const cardName = document.getElementById('cardholder-name').value.trim();
-        const cardEmail = document.getElementById('cardholder-email').value.trim();
-
-        if (!cardName || !cardEmail) {
-          alert('Please enter name and email for the card.');
-          payBtn.disabled = false;
-          payBtn.textContent = 'Pay Now';
+        if (!checkin || !checkout) {
+          showError('bookingAlert', 'Please select check-in and check-out dates');
           return;
         }
+
+        const checkInDate = new Date(checkin);
+        const checkOutDate = new Date(checkout);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Validate check-in is not in the past
+        if (checkInDate < today) {
+          showError('bookingAlert', 'Check-in date cannot be in the past');
+          return;
+        }
+        
+        // Validate checkout is after checkin
+        if (checkOutDate <= checkInDate) {
+          showError('bookingAlert', 'Check-out date must be at least one day after check-in date');
+          return;
+        }
+
+        // Calculate nights
+        const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+        if (nights < 1) {
+          showError('bookingAlert', 'Minimum booking is 1 night');
+          return;
+        }
+
+        const btn = document.getElementById('bookNowBtn');
+        const btnText = btn.querySelector('.btn-text');
+        const spinner = btn.querySelector('.spinner-border');
 
         try {
-          // create token
-          const { token, error } = await stripe.createToken(card, { name: cardName });
-          if (error) {
-            cardErrors.textContent = error.message || 'Card error';
-            payBtn.disabled = false;
-            payBtn.textContent = 'Pay Now';
-            return;
+          btn.disabled = true;
+          btnText.classList.add('d-none');
+          spinner.classList.remove('d-none');
+
+          // Step 1: Create booking with proper date format
+          // Add time to dates to match API format
+          const checkInDateTime = new Date(checkin + 'T12:00:00.000Z');
+          const checkOutDateTime = new Date(checkout + 'T12:00:00.000Z');
+
+          const bookingData = {
+            roomId: parseInt(roomId),
+            checkIn: checkInDateTime.toISOString(),
+            checkOut: checkOutDateTime.toISOString()
+          };
+
+          console.log('Creating booking with data:', bookingData);
+          const booking = await API.createBooking(bookingData);
+          console.log('Booking created:', booking);
+
+          if (!booking || !booking.id) {
+            throw new Error('Failed to create booking');
           }
 
-          // If no backend specified: demo mode -> print token and show alert
-          if (!BACKEND_CHARGE_URL) {
-            console.log('Demo mode: Stripe token (send this to your backend):', token);
-            alert('Demo mode: token created. Check console for token.id (send to your backend to complete payment).');
-            paymentBlock.style.display = 'none';
-            payBtn.disabled = false;
-            payBtn.textContent = 'Pay Now';
-            return;
+          // Step 2: Create payment intent
+          const paymentData = {
+            bookingId: booking.id,
+            amount: booking.totalPrice,
+            currency: 'usd',
+            description: `Hotel Booking #${booking.id} - Room ${booking.roomNumber}`
+          };
+
+          console.log('Creating payment intent:', paymentData);
+          const paymentIntent = await API.createPaymentIntent(paymentData);
+          console.log('Payment intent created:', paymentIntent);
+
+          if (!paymentIntent || !paymentIntent.paymentIntentId) {
+            throw new Error('Failed to create payment intent');
           }
 
-          // Send token + booking metadata to backend to charge / create Checkout session
-          const resp = await fetch(BACKEND_CHARGE_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              token: token.id,
-              booking,
-              cardEmail,
-              cardName
-            })
-          });
+          // Step 3: Process payment (simulate card payment)
+          console.log('Processing payment...');
+          const paymentResult = await API.processCardPayment(paymentIntent.paymentIntentId);
+          console.log('Payment result:', paymentResult);
 
-          const result = await resp.json();
+          if (paymentResult.success) {
+            // Step 4: Verify payment status
+            const paymentStatus = await API.checkPaymentStatus(paymentIntent.paymentIntentId);
+            console.log('Payment status:', paymentStatus);
 
-          if (!resp.ok) {
-            console.error('Backend error:', result);
-            alert(result.message || 'Server error during payment.');
-            payBtn.disabled = false;
-            payBtn.textContent = 'Pay Now';
-            return;
+            if (paymentStatus.success) {
+              // Show success modal
+              document.getElementById('bookingId').textContent = booking.id;
+              const modal = new bootstrap.Modal(document.getElementById('bookingSuccessModal'));
+              modal.show();
+
+              // Clear session storage
+              sessionStorage.removeItem('selectedRoom');
+
+              // Redirect after 3 seconds
+              setTimeout(() => {
+                window.location.href = 'user-dashboard.html';
+              }, 3000);
+            } else {
+              throw new Error(paymentStatus.message || 'Payment verification failed');
+            }
+          } else {
+            throw new Error(paymentResult.message || 'Payment failed');
           }
 
-          // backend should respond with { success: true, message } or redirect url
-          if (result.redirectUrl) {
-            window.location.href = result.redirectUrl;
-            return;
+        } catch (error) {
+          console.error('Booking/Payment error:', error);
+          
+          // More detailed error message
+          let errorMessage = 'Booking failed. Please try again.';
+          
+          if (error.message.includes('400')) {
+            errorMessage = 'Invalid booking data. Please check your dates and try again.';
+          } else if (error.message.includes('401') || error.message.includes('403')) {
+            errorMessage = 'Authentication error. Please login again.';
+          } else if (error.message) {
+            errorMessage = error.message;
           }
-
-          alert(result.message || 'Payment succeeded (backend).');
-          // optionally show success modal:
-          var bsModal = new bootstrap.Modal(document.getElementById('bookingSuccessModal'));
-          bsModal.show();
-
-        } catch (err) {
-          console.error('Payment flow error:', err);
-          alert('An error occurred during payment. See console.');
+          
+          showError('bookingAlert', errorMessage);
         } finally {
-          payBtn.disabled = false;
-          payBtn.textContent = 'Pay Now';
+          btn.disabled = false;
+          btnText.classList.remove('d-none');
+          spinner.classList.add('d-none');
         }
       });
-      // ----------------- end stripe flow -----------------
-    </script><!-- jQuery -->
-<script src="js/jquery-3.7.1.min.js"></script>
 
-<!-- Bootstrap -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Stripe -->
-<script src="https://js.stripe.com/v3/"></script>
-
-<!-- API Integration -->
-<script src="js/api-config.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/rooms.js"></script>
-<script src="js/bookings.js"></script>
-<script src="js/payment.js"></script>
-<script src="js/chat.js"></script>
-<script src="js/dashboard.js"></script>
-<script src="js/admin.js"></script>
-
-<!-- Main Script -->
-<script src="js/script.js"></script>
+      // Load room details on page load
+      loadRoomDetails();
+    </script>
   </body>
 </html>
-

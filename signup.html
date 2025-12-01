@@ -4,27 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>bookify Hotel | Sign Up</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-5.3.8-dist/bootstrap-5.3.8-dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/normalize.css"/>
-    <link rel="stylesheet" href="css/all.min.css"/>
-    <link rel="stylesheet" href="css/style.css"/>
-    <link rel="stylesheet" href="css/override.css"/>
-    
     <link rel="icon" href="image/hotel-icon.png">
+    <link href="css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/override.css">
   </head>
-  <body class="d-flex flex-column min-vh-100">
+  <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
       <div class="container">
         <a class="navbar-brand fw-bold" href="index.html">Bookify<span class="gold-logo">Hotel</span></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mainNavbar">
@@ -33,12 +24,6 @@
             <li class="nav-item"><a class="nav-link" href="rooms.html">Rooms</a></li>
             <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
             <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-            <li class="nav-item d-lg-none mt-2">
-              <a class="btn btn-outline-light w-100 rounded-pill" href="login.html">Login</a>
-            </li>
-            <li class="nav-item d-lg-none mt-2">
-              <a class="btn btn-accent w-100 rounded-pill" href="signup.html">Sign Up</a>
-            </li>
           </ul>
           <div class="d-none d-lg-flex ms-lg-3 gap-2">
             <a class="btn btn-outline-light rounded-pill" href="login.html">Login</a>
@@ -48,7 +33,7 @@
       </div>
     </nav>
 
-    <main class="flex-grow-1 section section-bg">
+    <section class="section section-bg">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-12 col-md-10 col-lg-7">
@@ -56,177 +41,228 @@
               <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
                   <h1 class="fw-bold mb-1">Create your account</h1>
-                  <p class="text-muted">Join Bookify Hotel for faster booking and exclusive deals.</p>
+                  <p class="text-muted">Join Bookify for faster booking and exclusive deals.</p>
                 </div>
-                <form id="signupForm" novalidate>
-                  <div class="mb-3">
-                    <label for="signupFullName" class="form-label">Full Name</label>
-                    <div class="input-group">
-                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-person"></i></span>
-                      <input type="text" class="form-control border-start-0" id="signupFullName" placeholder="John Doe" required>
+
+                <div id="signupAlert"></div>
+
+                <!-- Registration Form -->
+                <form id="signupForm" class="needs-validation" novalidate>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="signupFirstName" class="form-label">First Name</label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" id="signupFirstName" placeholder="John" required>
+                      </div>
+                      <div class="invalid-feedback">Please enter your first name.</div>
                     </div>
-                    <div class="invalid-feedback">Please enter your full name.</div>
+
+                    <div class="col-md-6 mb-3">
+                      <label for="signupLastName" class="form-label">Last Name</label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" id="signupLastName" placeholder="Doe" required>
+                      </div>
+                      <div class="invalid-feedback">Please enter your last name.</div>
+                    </div>
                   </div>
 
                   <div class="mb-3">
                     <label for="signupEmail" class="form-label">Email</label>
                     <div class="input-group">
-                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-envelope"></i></span>
-                      <input type="email" class="form-control border-start-0" id="signupEmail" placeholder="name@example.com" required>
+                      <span class="input-group-text bg-white"><i class="bi bi-envelope"></i></span>
+                      <input type="email" class="form-control" id="signupEmail" placeholder="name@example.com" required>
                     </div>
                     <div class="invalid-feedback">Please enter a valid email address.</div>
                   </div>
 
                   <div class="mb-3">
-                    <label for="signupPhone" class="form-label">Phone Number (Optional)</label>
+                    <label for="signupPhone" class="form-label">Phone Number</label>
                     <div class="input-group">
-                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-phone"></i></span>
-                      <input type="tel" class="form-control border-start-0" id="signupPhone" placeholder="+1 555 123 4567">
+                      <span class="input-group-text bg-white"><i class="bi bi-telephone"></i></span>
+                      <input type="tel" class="form-control" id="signupPhone" placeholder="+1234567890" required>
                     </div>
+                    <div class="invalid-feedback">Please enter your phone number.</div>
                   </div>
 
                   <div class="mb-3">
                     <label for="signupPassword" class="form-label">Password</label>
                     <div class="input-group">
-                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock"></i></span>
-                      <input type="password" class="form-control border-start-0" id="signupPassword" placeholder="••••••••" minlength="6" required>
+                      <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
+                      <input type="password" class="form-control" id="signupPassword" placeholder="••••••••" minlength="6" required>
                     </div>
+                    <div class="form-text">Password must be at least 6 characters with uppercase, lowercase, and numbers.</div>
                     <div class="invalid-feedback">Password must be at least 6 characters.</div>
                   </div>
 
                   <div class="mb-4">
                     <label for="signupConfirm" class="form-label">Confirm Password</label>
                     <div class="input-group">
-                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock-fill"></i></span>
-                      <input type="password" class="form-control border-start-0" id="signupConfirm" placeholder="••••••••" minlength="6" required>
+                      <span class="input-group-text bg-white"><i class="bi bi-lock-fill"></i></span>
+                      <input type="password" class="form-control" id="signupConfirm" placeholder="••••••••" minlength="6" required>
                     </div>
                     <div class="invalid-feedback">Passwords must match.</div>
                   </div>
 
                   <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-accent btn-lg">Sign Up</button>
+                    <button type="submit" class="btn btn-accent btn-lg" id="signupBtn">
+                      <span class="signup-text">Sign Up</span>
+                      <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                    </button>
                   </div>
 
-                  <p class="text-center mt-3 mb-0 text-muted">Already have an account? <a href="login.html" class="text-primary text-decoration-none">Log in</a></p>
+                  <p class="text-center mt-3 mb-0 text-muted">Already have an account? <a href="login.html" class="link-primary">Log in</a></p>
                 </form>
+
+                <!-- OTP Verification Form -->
+                <div id="otpForm" class="d-none">
+                  <h5 class="mb-3">Verify Your Email</h5>
+                  <p class="text-muted">We've sent a verification code to your email.</p>
+                  <form id="otpVerifyForm">
+                    <div class="mb-3">
+                      <label for="otpCode" class="form-label">Enter OTP Code</label>
+                      <input type="text" class="form-control" id="otpCode" placeholder="000000" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                      <button type="submit" class="btn btn-accent">Verify</button>
+                    </div>
+                  </form>
+                </div>
+
               </div>
             </div>
           </div>
         </div>
       </div>
-    </main>
+    </section>
 
     <footer class="footer text-white py-4 mt-auto">
       <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-        <div>© <span id="year">2024</span> Bookify Hotel</div>
+        <div>© <span id="year"></span> Bookify Hotel</div>
         <div class="d-flex gap-3 fs-5">
-          <a class="text-white-50 hover-white" href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
-          <a class="text-white-50 hover-white" href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-          <a class="text-white-50 hover-white" href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a class="text-white-50 hover-white" href="#"><i class="bi bi-twitter-x"></i></a>
+          <a class="text-white-50 hover-white" href="#"><i class="bi bi-facebook"></i></a>
+          <a class="text-white-50 hover-white" href="#"><i class="bi bi-instagram"></i></a>
         </div>
       </div>
     </footer>
 
-    <!-- Scripts (NO STRIPE) -->
     <script src="js/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- API Configuration -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/api-config.js"></script>
-    <script src="js/auth.js"></script>
-    
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // Set current year
-        document.getElementById('year').textContent = new Date().getFullYear();
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      let registrationEmail = '';
+
+      // Signup Form
+      document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        // Initialize signup form
-        const signupForm = document.getElementById('signupForm');
-        if (signupForm) {
-          signupForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            await handleSignup();
-          });
+        const form = e.target;
+        if (!form.checkValidity()) {
+          e.stopPropagation();
+          form.classList.add('was-validated');
+          return;
         }
 
-        // Password confirmation validation
-        const passwordInput = document.getElementById('signupPassword');
-        const confirmInput = document.getElementById('signupConfirm');
-        
-        confirmInput.addEventListener('input', function() {
-          if (passwordInput.value !== confirmInput.value) {
-            confirmInput.setCustomValidity('Passwords do not match');
-          } else {
-            confirmInput.setCustomValidity('');
-          }
-        });
-
-        // Add reveal animations
-        const reveals = document.querySelectorAll('.reveal');
-        reveals.forEach(reveal => {
-          reveal.classList.add('active');
-        });
-      });
-
-      async function handleSignup() {
-        const fullName = document.getElementById('signupFullName').value.trim();
+        const firstName = document.getElementById('signupFirstName').value.trim();
+        const lastName = document.getElementById('signupLastName').value.trim();
         const email = document.getElementById('signupEmail').value.trim();
-        const phone = document.getElementById('signupPhone').value.trim();
+        const phoneNumber = document.getElementById('signupPhone').value.trim();
         const password = document.getElementById('signupPassword').value;
         const confirmPassword = document.getElementById('signupConfirm').value;
 
-        if (!fullName || !email || !password) {
-          alert('Please fill in all required fields');
-          return;
-        }
-
-        if (password.length < 6) {
-          alert('Password must be at least 6 characters');
-          return;
-        }
-
         if (password !== confirmPassword) {
-          alert('Passwords do not match');
+          showError('signupAlert', 'Passwords do not match');
           return;
         }
 
-        const userData = {
-          firstName: fullName.split(' ')[0],
-          lastName: fullName.split(' ').slice(1).join(' ') || '',
-          email: email,
-          phoneNumber: phone || '',
-          password: password,
-          confirmPassword: confirmPassword
-        };
+        const btn = document.getElementById('signupBtn');
+        const btnText = btn.querySelector('.signup-text');
+        const spinner = btn.querySelector('.spinner-border');
 
         try {
-          const signupBtn = document.querySelector('#signupForm button[type="submit"]');
-          signupBtn.disabled = true;
-          signupBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Creating account...';
+          btn.disabled = true;
+          btnText.classList.add('d-none');
+          spinner.classList.remove('d-none');
 
-          const result = await AuthAPI.register(userData);
-          
-          if (result.success) {
-            if (result.requiresOtp) {
-              alert('Registration successful! Please check your email for verification code.');
-              window.location.href = `otp-verification.html?email=${encodeURIComponent(email)}`;
-            } else {
-              alert('Registration successful!');
-              window.location.href = 'user-dashboard.html';
-            }
-          } else {
-            throw new Error(result.message || 'Registration failed');
+          const response = await API.register({
+            firstName,
+            lastName,
+            email,
+            phoneNumber,
+            password,
+            confirmPassword
+          });
+
+          if (response.success && response.requiresOtp) {
+            registrationEmail = email;
+            showSuccess('signupAlert', response.message);
+            
+            // Show OTP form
+            document.getElementById('signupForm').classList.add('d-none');
+            document.getElementById('otpForm').classList.remove('d-none');
           }
-          
         } catch (error) {
-          console.error('Registration failed:', error);
-          alert(error.message || 'Registration failed. Please try again.');
+          showError('signupAlert', error.message || 'Registration failed. Please try again.');
         } finally {
-          const signupBtn = document.querySelector('#signupForm button[type="submit"]');
-          signupBtn.disabled = false;
-          signupBtn.innerHTML = 'Sign Up';
+          btn.disabled = false;
+          btnText.classList.remove('d-none');
+          spinner.classList.add('d-none');
         }
-      }
+      });
+
+      // OTP Verification
+      document.getElementById('otpVerifyForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const otp = document.getElementById('otpCode').value.trim();
+
+        try {
+          const response = await API.verifyOtp(registrationEmail, otp);
+          
+          if (response.success && response.token) {
+            Storage.setToken(response.token);
+            Storage.setUser({
+              userId: response.userId,
+              email: response.email,
+              firstName: response.firstName,
+              lastName: response.lastName,
+              roles: response.roles
+            });
+
+            showSuccess('signupAlert', 'Email verified successfully! Redirecting...');
+            
+            setTimeout(() => {
+              window.location.href = 'user-dashboard.html';
+            }, 1500);
+          }
+        } catch (error) {
+          showError('signupAlert', error.message || 'OTP verification failed. Please try again.');
+        }
+      });
+
+      // Real-time password validation
+      document.getElementById('signupPassword').addEventListener('input', function() {
+        const confirmPassword = document.getElementById('signupConfirm');
+        if (confirmPassword.value && this.value !== confirmPassword.value) {
+          confirmPassword.setCustomValidity('Passwords do not match');
+        } else {
+          confirmPassword.setCustomValidity('');
+        }
+      });
+
+      document.getElementById('signupConfirm').addEventListener('input', function() {
+        const password = document.getElementById('signupPassword').value;
+        if (this.value && this.value !== password) {
+          this.setCustomValidity('Passwords do not match');
+        } else {
+          this.setCustomValidity('');
+        }
+      });
     </script>
+    <script src="js/script.js"></script>
   </body>
 </html>
